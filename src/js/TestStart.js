@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEnvelopeOpen, faPhone, faUniversity
 } from '@fortawesome/fontawesome-free-solid'
+import $ from 'jquery';
 import {
 
 } from '@fortawesome/fontawesome-free-regular'
@@ -11,43 +12,47 @@ import {
     faFacebook,
     faGithub, faQq
 } from '@fortawesome/fontawesome-free-brands'
-import axios from 'axios';
-import { Spin } from 'antd';
+
 import { subscribe } from './utils.js';
-import { useLocation } from "react-router-dom";
-import testImg from '../figures/4.jpg'
-// import * as allBookImg from '../figures'
 
-class BookDetail extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: {}
-        };
+class TestStart extends Component {
+    wholePage() {
+        $(window).attr("location", "#s1");
     }
 
-    componentDidMount() {
-        this.fetchData();
-    }
-
-    fetchData() {
-        const formData = new FormData();
-        // const id = this.props.match.params.id;
-        formData.append('id', 4);
-
-        axios.post('/api/BookDetails', formData).then(response =>
-            this.setState({ data: response.data })
-        ).catch(error => {
-            console.log(error)
+    choice() {
+        $(function () {
+            $("#test li").click(function () {
+                $(this).siblings('li').removeClass('li-selected');
+                $(this).addClass('li-selected');
+                $(this).siblings('li').attr('name', '');
+                $(this).attr('name', 'li-selected');
+            });
         });
-    };
+    }
+
+    sub() {
+
+        /*  0 -- 题目id
+                      1 -- 题目text
+                      2 -- 选项文本 */
+
+        /*var arr0 = [];*/
+        var arr1 = [];
+        /*var arr2 = [];*/
+
+        $(".li-selected").each(function () {
+            var va1 = $(this).attr('value');
+            arr1.push(va1);
+        });
+
+        $.get('/submit', JSON.stringify({ "titleID_choice": arr1 }), function (data) {
+            $(window).attr("location", "/process");
+        }, "text");
+    }
 
     render() {
-        const { data } = this.state;
-        console.log(data.data)
-        if (!data.data) return <Spin />
-        const coreData = data.data
         return (
             <div>
                 <header className="header_section">
@@ -59,8 +64,7 @@ class BookDetail extends Component {
                                 </span>
                             </a>
 
-                            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                                 <span className=""> </span>
                             </button>
 
@@ -79,14 +83,14 @@ class BookDetail extends Component {
                                         <a className="nav-link" href="/statistics"> Statistics </a>
                                     </li>
                                     {/* {%if status == 0 or status == 1%}
-                                            <li className="nav-item active">
-                                                <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
-                                            </li>
-                                            {% elif status == 2%}
-                                            <li className="nav-item active">
-                                                <a className="nav-link" href="/profile">Profile <span className="sr-only">(current)</span> </a>
-                                            </li>
-                                            {% endif %} */}
+              <li className="nav-item active">
+                <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
+              </li>
+              {%elif status == 2%}
+              <li className="nav-item active">
+                <a className="nav-link" href="/profile">Profile <span className="sr-only">(current)</span> </a>
+              </li>
+              {%endif%} */}
                                 </ul>
                             </div>
                         </nav>
@@ -94,87 +98,117 @@ class BookDetail extends Component {
                 </header>
 
 
-                <section className="about_section layout_padding">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-md-4">
-                                <div className="img-box">
-                                    <img src={testImg} alt="" />
-                                </div>
+
+                <section id="s0" className="catagory_section layout_padding0">
+                    <div className="catagory_container">
+                        <div className="container ">
+                            <div className="heading_container heading_center">
+                                <h2>
+                                    测试开始
+                                </h2>
+                                <p>
+                                    本次测试共有25个小题，分为选择题和判断题。请认真阅读每个小题，选择正确的答案。
+                                </p>
+                                <br /><br />
                             </div>
-                            <div className="col-md-6">
-
-                                <h5 className="text-center">排名：{coreData.id}</h5>
-                                <h5 className="text-center">书名：{coreData.name}</h5>
-                                <h5 className="text-center">作者：{coreData.author}</h5>
-
-                                {coreData.name_o &&
-                                    <div>
-                                        <h5 className="text-center">原作名：{coreData.name_o}</h5>
-                                        <h5 className="text-center">译者：{coreData.trans}</h5>
-                                    </div>
-                                }
-
-                                <h5 className="text-center">国家：{coreData.country}</h5>
-                                <h5 className="text-center">出版社：{coreData.publisher}</h5>
-                                <h5 className="text-center">出版年份：{coreData.year}</h5>
-                                <h5 className="text-center">页数：{coreData.page}</h5>
-                                <h5 className="text-center">价格：{coreData.price}</h5>
-                                <h5 className="text-center">装帧：{coreData.frame}</h5>
-                                <h5 className="text-center">丛书：{coreData.category}</h5>
-                                <h5 className="text-center">isbn码：{coreData.isbn}</h5>
-                                <h5 className="text-center">评分：{coreData.star}</h5>
-                                <h5 className="text-center">评论数：{coreData.comment_num}</h5>
-                            </div>
+                            {/* {%if whole == 0%}
+            <div className="row">
+              <div className="col-sm-1 col-md-12">
+                <div className="btn-box">
+                  <a href="#s1">确认</a>
+                </div>
+              </div>
+            </div>
+            {%endif%} */}
                         </div>
-                        <br />
-                        <br />
-                        <div className="row">
-                            <div className="col-md-12">
-                                <h5>简介：{coreData.brief}</h5>
-                            </div>
-                        </div>
-                    </div>
-                    <br />
-                    <br />
-                    <div className="row align-items-center">
-                        {/* {%for j in range(0,5)%}
-                                                <div className="col">
-                                                    <h5 className="text-center">&nbsp;</h5>
-                                                </div>
-                                                {% endfor %} */}
-                        <div className="col-md-offset-1">
-                            <div className="btn-box m-auto">
-                                <a href="/books">
-                                    <button>
-                                        返回
-                                    </button>
-                                </a>
-                                {/* {%if status == 2%}
-                                                        &emsp;
-                                                        <!--<a onclick="testSingle()">-->
-                                                            <a href="/testID/{{i+1}}">
-                                                                <button>
-                                                                    测试
-                                                                </button>
-                                                            </a>
-                                                            {% endif %} */}
-                            </div>
-                        </div>
-                        {/* {%for j in range(0,5)%}
-                                                <div className="col">
-                                                    <h5 className="text-center">&nbsp;</h5>
-                                                </div>
-                                                {% endfor %} */}
-
                     </div>
                 </section>
+                {/* <div>{{whole}}</div> */}
+
+                {/* {%for i in range(0, length) %}
+  {%if test[i]["Option_num"] == 4 %}
+<section id="s{{i+1}}" className="catagory_section layout_padding3">
+    {% endif %}
+    {%if test[i]["Option_num"] == 2%}
+    <section id="s{{i+1}}" className="catagory_section layout_padding4">
+        {% endif %}
+        <!--样式在style.css 57行附近-->
+        {%if test[i]["Option_num"] == 3%}
+        <section id="s{{i+1}}" className="catagory_section layout_padding5">
+            {% endif %}
+            <div className="catagory_container">
+                <div className="container ">
+                    <div className="row">
+                        <div className="col-sm-6 col-md-3 ">
+                            <div className="box ">
+                                <div className="img-box">
+                                    <h3><b>{{ i+ 1}}</b></h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-sm-6 col-md-9 ">
+                            <div>
+                                <h5 id="idx">
+                                    题目：{{ test[i]["Question"] }}
+                                </h5>
+                                <div className="box1 ">
+                                    <form method="post">
+                                        <ul id="test">
+                                            {%for j in range(0,test[i]["Option_num"])%}
+                                            <!--bootstrap.css 2427行附近-->
+                                            <li name="" className="ori" value="{{i}}_{{test[i][" Options"][j]}}">
+                                            {{ head[j]}}. &nbsp; {{ test[i]["Options"][j] }}
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--最后一个加总提交样式-->
+                <!-- 题数-1 -->
+                {%if whole == 0%}
+                {%if i == length-1%}
+                <br><br>
+                    <div className="btn-box">
+                        <!--a标签的样式已经被改成跟button差不多的玩意儿了-->
+                        <a href="#s{{i}}">上一题</a>
+                        <div>&emsp;</div>
+                        <!--整卷阅览需要把所有的上下题按钮藏起来-->
+                        <a onclick="wholepage()">整卷阅览</a>
+                        <div>&emsp;</div>
+                        <a onclick="sub()">提交</a>
+                    </div>
+                    <!-- i>0, i<题数-1 -->
+                    {% elif i>0 and i<length-1%}
+                    <div className="btn-box">
+                        <!--a标签的样式已经被改成跟button差不多的玩意儿了-->
+                        <a href="#s{{i}}">上一题</a>
+                        <div>&emsp;</div>
+                        <a href="#s{{i+2}}">下一题</a>
+                    </div>
+                    {%else%}
+                    <div className="btn-box">
+                        <a href="#s{{i+2}}">下一题</a>
+                    </div>
+                    {% endif %}
+                    {% elif whole == 1 and i == length-1%}
+                    <div className="btn-box">
+                        <a onclick="wholepage()">整卷阅览</a>
+                        <div>&emsp;</div>
+                        <a onclick="sub()">提交</a>
+                    </div>
+                    {% endif %}
+                </div>
+                </section>
+                {% endfor %} */}
 
                 <section className="info_section layout_padding2">
                     <div className="container">
                         <div className="row">
                             <div className="col-md-6 col-lg-4 info-col">
-                                <div className="info_data">
+                                <div className="info_detail">
                                     <h4>
                                         About Us
                                     </h4>
@@ -244,6 +278,7 @@ class BookDetail extends Component {
                         </div>
                     </div>
                 </section>
+
                 <footer className="footer_section">
                     <div className="container">
                         <p>
@@ -253,8 +288,9 @@ class BookDetail extends Component {
                     </div>
                 </footer>
             </div>
+
         )
     }
 }
 
-export default BookDetail;
+export default TestStart

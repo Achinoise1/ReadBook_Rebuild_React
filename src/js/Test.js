@@ -35,20 +35,7 @@ class Test extends Component {
         if (arr1.length === 0) {
             alert("Please select one category!");
         } else {
-            fetch('/testSelected', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ selected: arr1 })
-            })
-                .then((response) => response.text())
-                .then((data) => {
-                    window.location.href = "/testStart";
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
+            window.location.href = `/testStart/${arr1}`;
         }
     }
 

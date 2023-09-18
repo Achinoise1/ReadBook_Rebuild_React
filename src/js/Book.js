@@ -9,12 +9,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEnvelopeOpen, faPhone, faUniversity
 } from '@fortawesome/fontawesome-free-solid'
-
-import { } from '@fortawesome/fontawesome-free-regular'
 import { faFacebook, faGithub, faQq } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios';
 import { subscribe } from './utils.js';
-import { Spin } from 'antd';
+import { Spin, Button } from 'antd';
+
 
 class Book extends Component {
 
@@ -43,23 +42,17 @@ class Book extends Component {
 
     render() {
         const { data } = this.state;
-        if (Array.isArray(data.data)) {
-            const dataLength = data.data.length;
-        } else {
-            <Spin />
-        }
-
+        if (!data.data) return <Spin />
         const numbers = [];
         for (let i = 0; i < 4; i++) {
             numbers.push(i);
         }
 
-
         return (
             <div>
                 <div className="page-container">
 
-                    <div className="scrollable-section">
+                    <div className="scrollable-section-lg">
                         <div className="hero_area">
                             <header className="header_section">
                                 <div className="container-fluid">
@@ -117,6 +110,7 @@ class Book extends Component {
                                                         <h5>{item.id}</h5>
                                                         <h5>{item.name}</h5>
                                                         <h5>{item.author}</h5>
+                                                        <button>详情</button>
                                                     </div>
                                                 </div>
                                             ))
@@ -214,7 +208,7 @@ class Book extends Component {
                         </div>
                     </div>
 
-                    <div className="fixed-section">
+                    <div className="scrollable-section-sm">
                         {/* 做悬浮导航栏 */}
                         {/* <div className="container">
 
@@ -247,36 +241,33 @@ class Book extends Component {
 
                         </div> */}
 
-                        <div className="fixed-section">
-                            <div className="flex-container">
-                                {Array.isArray(data.data) ? (
-                                    <div>
-                                        {data.data.map((item, index) => {
-                                            const colNum = 8;
-                                            if (index % colNum === 0) {
-                                                const temp = index / colNum + 1;
-                                                return (
-                                                    <div className="flex-item" key={temp}>
-                                                        {Array.from({ length: colNum }, (_, subIndex) => (
-                                                            <a className="sm child-flex-item" key={item.id + subIndex} href={'#' + (item.id + subIndex)}>
-                                                                {item.id + subIndex}{'\u00A0\u00A0'}
-                                                            </a>
-                                                        ))}
-                                                    </div>
-                                                );
-                                            } else {
-                                                return null;
-                                            }
-                                        })}
-                                    </div>
-                                ) : (
-                                    <Spin />
-                                )}
-                            </div>
+                        <div className="flex-container">
+                            {Array.isArray(data.data) ? (
+                                <div>
+                                    {data.data.map((item, index) => {
+                                        const colNum = 4;
+                                        if (index % colNum === 0) {
+                                            const temp = index / colNum + 1;
+                                            return (
+                                                <div className="flex-item" key={temp}>
+                                                    {Array.from({ length: colNum }, (_, subIndex) => (
+                                                        <Button className="sm child-flex-item col-3" type="dashed" key={item.id + subIndex} href={'#' + (item.id + subIndex)}>
+                                                            {item.id + subIndex}{'\u00A0\u00A0'}
+                                                        </Button>
+
+                                                    ))}
+                                                </div>
+                                            );
+                                        } else {
+                                            return null;
+                                        }
+                                    })}
+                                </div>
+                            ) : (
+                                <Spin />
+                            )}
                         </div>
                     </div>
-
-
                 </div>
 
 
@@ -284,5 +275,7 @@ class Book extends Component {
         )
     }
 }
+
+
 
 export default Book
