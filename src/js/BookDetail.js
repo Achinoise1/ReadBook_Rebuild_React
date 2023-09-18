@@ -21,6 +21,9 @@ import { useEffect, useState } from "react";
 
 function BookDetail() {
 
+    const location = useLocation();
+    const { id } = location.state;
+
     const [data, setData] = useState({});
 
     useEffect(() => {
@@ -29,7 +32,7 @@ function BookDetail() {
 
     const fetchData = () => {
         const formData = new FormData();
-        formData.append('id', 4);
+        formData.append('id', id);
 
         axios.post('/api/BookDetails', formData)
             .then(response => {

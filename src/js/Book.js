@@ -13,6 +13,7 @@ import { faFacebook, faGithub, faQq } from '@fortawesome/fontawesome-free-brands
 import axios from 'axios';
 import { subscribe } from './utils.js';
 import { Spin, Button } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 
 function Book() {
@@ -35,6 +36,12 @@ function Book() {
             .catch(error => {
                 console.log(error);
             });
+    };
+
+    const navigate = useNavigate();
+
+    const handleClick = (bookId) => {
+        navigate('/bookDetail', { state: { id: bookId } });
     };
 
     // constructor(props) {
@@ -136,7 +143,7 @@ function Book() {
                                                     <h5>{item.id}</h5>
                                                     <h5>{item.name}</h5>
                                                     <h5>{item.author}</h5>
-                                                    <button>详情</button>
+                                                    <button onClick={() => handleClick(item.id)}>详情</button>
                                                 </div>
                                             </div>
                                         ))
