@@ -23,7 +23,7 @@ class App extends Component {
             <Route path='/books' element={<Book />} />
             <Route path='/bookDetail' element={<BookDetail />} />
             <Route path='/test' element={<Test />} />
-            <Route path='/testStart' element={<TestStart />} />
+            <Route path='/testStart/*' element={<TestStart />} />
           </Routes>
         </div>
       </BrowserRouter>

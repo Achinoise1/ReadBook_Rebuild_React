@@ -16,12 +16,12 @@ import {
 import { subscribe } from './utils.js';
 
 
-class TestStart extends Component {
-    wholePage() {
+function TestStart() {
+    const wholePage = () => {
         $(window).attr("location", "#s1");
     }
 
-    choice() {
+    const choice = () => {
         $(function () {
             $("#test li").click(function () {
                 $(this).siblings('li').removeClass('li-selected');
@@ -32,7 +32,7 @@ class TestStart extends Component {
         });
     }
 
-    sub() {
+    const sub = () => {
 
         /*  0 -- 题目id
                       1 -- 题目text
@@ -52,37 +52,36 @@ class TestStart extends Component {
         }, "text");
     }
 
-    render() {
-        return (
-            <div>
-                <header className="header_section">
-                    <div className="container-fluid">
-                        <nav className="navbar navbar-expand-lg custom_nav-container ">
-                            <a className="navbar-brand" href="/">
-                                <span>
-                                    Read-Book
-                                </span>
-                            </a>
+    return (
+        <div>
+            <header className="header_section">
+                <div className="container-fluid">
+                    <nav className="navbar navbar-expand-lg custom_nav-container ">
+                        <a className="navbar-brand" href="/">
+                            <span>
+                                Read-Book
+                            </span>
+                        </a>
 
-                            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                                <span className=""> </span>
-                            </button>
+                        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span className=""> </span>
+                        </button>
 
-                            <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                                <ul className="navbar-nav">
-                                    <li className="nav-item">
-                                        <a className="nav-link pl-lg-0" href="/">Home </a>
-                                    </li>
-                                    <li className="nav-item">
-                                        <a className="nav-link" href="/books"> Books</a>
-                                    </li>
-                                    <li className="nav-item">
-                                        <a className="nav-link" href="/test">Test</a>
-                                    </li>
-                                    <li className="nav-item">
-                                        <a className="nav-link" href="/statistics"> Statistics </a>
-                                    </li>
-                                    {/* {%if status == 0 or status == 1%}
+                        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul className="navbar-nav">
+                                <li className="nav-item">
+                                    <a className="nav-link pl-lg-0" href="/">Home </a>
+                                </li>
+                                <li className="nav-item">
+                                    <a className="nav-link" href="/books"> Books</a>
+                                </li>
+                                <li className="nav-item">
+                                    <a className="nav-link" href="/test">Test</a>
+                                </li>
+                                <li className="nav-item">
+                                    <a className="nav-link" href="/statistics"> Statistics </a>
+                                </li>
+                                {/* {%if status == 0 or status == 1%}
               <li className="nav-item active">
                 <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
               </li>
@@ -91,27 +90,27 @@ class TestStart extends Component {
                 <a className="nav-link" href="/profile">Profile <span className="sr-only">(current)</span> </a>
               </li>
               {%endif%} */}
-                                </ul>
-                            </div>
-                        </nav>
-                    </div>
-                </header>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </header>
 
 
 
-                <section id="s0" className="catagory_section layout_padding0">
-                    <div className="catagory_container">
-                        <div className="container ">
-                            <div className="heading_container heading_center">
-                                <h2>
-                                    测试开始
-                                </h2>
-                                <p>
-                                    本次测试共有25个小题，分为选择题和判断题。请认真阅读每个小题，选择正确的答案。
-                                </p>
-                                <br /><br />
-                            </div>
-                            {/* {%if whole == 0%}
+            <section id="s0" className="catagory_section layout_padding0">
+                <div className="catagory_container">
+                    <div className="container ">
+                        <div className="heading_container heading_center">
+                            <h2>
+                                测试开始
+                            </h2>
+                            <p>
+                                本次测试共有25个小题，分为选择题和判断题。请认真阅读每个小题，选择正确的答案。
+                            </p>
+                            <br /><br />
+                        </div>
+                        {/* {%if whole == 0%}
             <div className="row">
               <div className="col-sm-1 col-md-12">
                 <div className="btn-box">
@@ -120,12 +119,12 @@ class TestStart extends Component {
               </div>
             </div>
             {%endif%} */}
-                        </div>
                     </div>
-                </section>
-                {/* <div>{{whole}}</div> */}
+                </div>
+            </section>
+            {/* <div>{{whole}}</div> */}
 
-                {/* {%for i in range(0, length) %}
+            {/* {%for i in range(0, length) %}
   {%if test[i]["Option_num"] == 4 %}
 <section id="s{{i+1}}" className="catagory_section layout_padding3">
     {% endif %}
@@ -204,93 +203,92 @@ class TestStart extends Component {
                 </section>
                 {% endfor %} */}
 
-                <section className="info_section layout_padding2">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-md-6 col-lg-4 info-col">
-                                <div className="info_detail">
-                                    <h4>
-                                        About Us
-                                    </h4>
-                                    <p>
-                                        Contact us on these social-medias.
-                                    </p>
-                                    <div className="info_social">
-                                        <a href="https://www.facebook.com/profile.php?id=100064520177692">
-                                            <FontAwesomeIcon icon={faFacebook} />
-                                        </a>
-                                        <a href="https://user.qzone.qq.com/1659455853">
-                                            <FontAwesomeIcon icon={faQq} />
-                                        </a>
-                                        <a href="https://github.com/Achinoise1">
-                                            <FontAwesomeIcon icon={faGithub} />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-6 col-lg-4 info-col">
-                                <div className="info_contact">
-                                    <h4>
-                                        Address
-                                    </h4>
-                                    <div className="contact_link_box">
-                                        <a href="https://www.zstu.edu.cn/">
-                                            <FontAwesomeIcon icon={faUniversity} />
-                                            <span>
-                                                ZSTU
-                                            </span>
-                                        </a>
-
-                                        <a href="https://github.com/Casta-mere/Read-Book">
-                                            <FontAwesomeIcon icon={faGithub} />
-                                            <span>
-                                                View our Github page
-                                            </span>
-                                        </a>
-                                        <a href="" style={{ pointerEvents: "none" }}>
-                                            <FontAwesomeIcon icon={faPhone} />
-                                            <span>
-                                                Call +86 13834230484
-                                            </span>
-                                        </a>
-                                        <a href="" style={{ pointerEvents: "none" }}>
-                                            <FontAwesomeIcon icon={faEnvelopeOpen} />
-                                            <span>
-                                                E-mail castamego@gmail.com
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-md-6 col-lg-4 info-col">
-                                <div className="info_contact">
-                                    <h4>
-                                        Newsletter
-                                    </h4>
-                                    <form action="#">
-                                        <input type="text" placeholder="Enter email" />
-                                        <button type="submit" onClick={subscribe}>
-                                            Subscribe
-                                        </button>
-                                    </form>
+            <section className="info_section layout_padding2">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-6 col-lg-4 info-col">
+                            <div className="info_detail">
+                                <h4>
+                                    About Us
+                                </h4>
+                                <p>
+                                    Contact us on these social-medias.
+                                </p>
+                                <div className="info_social">
+                                    <a href="https://www.facebook.com/profile.php?id=100064520177692">
+                                        <FontAwesomeIcon icon={faFacebook} />
+                                    </a>
+                                    <a href="https://user.qzone.qq.com/1659455853">
+                                        <FontAwesomeIcon icon={faQq} />
+                                    </a>
+                                    <a href="https://github.com/Achinoise1">
+                                        <FontAwesomeIcon icon={faGithub} />
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                        <div className="col-md-6 col-lg-4 info-col">
+                            <div className="info_contact">
+                                <h4>
+                                    Address
+                                </h4>
+                                <div className="contact_link_box">
+                                    <a href="https://www.zstu.edu.cn/">
+                                        <FontAwesomeIcon icon={faUniversity} />
+                                        <span>
+                                            ZSTU
+                                        </span>
+                                    </a>
 
-                <footer className="footer_section">
-                    <div className="container">
-                        <p>
-                            &copy; <span id="displayYear"></span> All Rights Reserved By
-                            <a href="https://github.com/Casta-mere">Castamere</a>
-                        </p>
+                                    <a href="https://github.com/Casta-mere/Read-Book">
+                                        <FontAwesomeIcon icon={faGithub} />
+                                        <span>
+                                            View our Github page
+                                        </span>
+                                    </a>
+                                    <a href="" style={{ pointerEvents: "none" }}>
+                                        <FontAwesomeIcon icon={faPhone} />
+                                        <span>
+                                            Call +86 13834230484
+                                        </span>
+                                    </a>
+                                    <a href="" style={{ pointerEvents: "none" }}>
+                                        <FontAwesomeIcon icon={faEnvelopeOpen} />
+                                        <span>
+                                            E-mail castamego@gmail.com
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-6 col-lg-4 info-col">
+                            <div className="info_contact">
+                                <h4>
+                                    Newsletter
+                                </h4>
+                                <form action="#">
+                                    <input type="text" placeholder="Enter email" />
+                                    <button type="submit" onClick={subscribe}>
+                                        Subscribe
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                </footer>
-            </div>
+                </div>
+            </section>
 
-        )
-    }
+            <footer className="footer_section">
+                <div className="container">
+                    <p>
+                        &copy; <span id="displayYear"></span> All Rights Reserved By
+                        <a href="https://github.com/Casta-mere">Castamere</a>
+                    </p>
+                </div>
+            </footer>
+        </div>
+
+    )
 }
 
 export default TestStart
