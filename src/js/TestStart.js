@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, useState, useEffect } from "react";
 import '../../node_modules/font-awesome/less/font-awesome.less';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -12,8 +12,9 @@ import {
     faFacebook,
     faGithub, faQq
 } from '@fortawesome/fontawesome-free-brands'
-
+import { useLocation } from "react-router-dom";
 import { subscribe } from './utils.js';
+import axios from "axios";
 
 
 function TestStart() {
@@ -51,6 +52,31 @@ function TestStart() {
             $(window).attr("location", "/process");
         }, "text");
     }
+
+    const location = useLocation();
+    const { testType } = location.state;
+
+    const [ques, setQues] = useState({});
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = () => {
+        const formData = new FormData();
+        formData.append('type', testType);
+        axios.post('/api/TestSelected', formData)
+            .then(response => {
+                setQues(response.data)
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+    }
+
+    const coreData = ques.data
+    console.log(coreData)
 
     return (
         <div>

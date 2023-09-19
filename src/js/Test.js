@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEnvelopeOpen, faPhone, faUniversity
 } from '@fortawesome/fontawesome-free-solid'
-import $ from 'jquery';
 import {
 
 } from '@fortawesome/fontawesome-free-regular'
@@ -19,7 +18,7 @@ import cat3 from '../figures/cat3.png';
 import cat4 from '../figures/cat4.png';
 import cat5 from '../figures/cat5.png';
 import cat6 from '../figures/cat6.png';
-
+import { useNavigate } from 'react-router-dom';
 import { subscribe } from './utils.js';
 
 
@@ -47,20 +46,22 @@ function Test() {
     //         $(this).attr('name', 'selected');
     //     });
     // }
-    const selected = () => {
-        const arr1 = [];
-        const selectedElements = document.querySelectorAll(".selected");
-        selectedElements.forEach((element) => {
-            const value = element.getAttribute('value');
-            arr1.push(value);
-        });
 
-        if (arr1.length === 0) {
-            alert("Please select one category!");
-        } else {
-            window.location.href = `/testStart/${arr1}`;
-        }
-    };
+
+    // const selected = () => {
+    //     const arr1 = [];
+    //     const selectedElements = document.querySelectorAll(".selected");
+    //     selectedElements.forEach((element) => {
+    //         const value = element.getAttribute('value');
+    //         arr1.push(value);
+    //     });
+
+    //     if (arr1.length === 0) {
+    //         alert("Please select one category!");
+    //     } else {
+    //         window.location.href = `/testStart/${arr1}`;
+    //     }
+    // };
 
     useEffect(() => {
         const handleImageClick = function () {
@@ -81,6 +82,24 @@ function Test() {
             imgBoxes.forEach((box) => box.removeEventListener("click", handleImageClick));
         };
     }, []);
+
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        var arr1 = 'none';
+        const selectedElements = document.querySelectorAll(".selected");
+        selectedElements.forEach((element) => {
+            const value = element.getAttribute('value');
+            arr1 = value;
+        });
+
+        if (arr1 === 'none') {
+            alert("Please select one category!");
+        } else {
+            navigate('/testStart', { state: { testType: arr1 } });
+        }
+
+    };
 
 
     return (
@@ -215,7 +234,7 @@ function Test() {
                         </div>
                         <div className="catagory_container">
                             <div className="btn-box">
-                                <a onClick={selected}>开始测试</a>
+                                <a onClick={handleClick}>开始测试</a>
                             </div>
                         </div>
                     </div>
