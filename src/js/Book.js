@@ -12,7 +12,7 @@ import {
 import { faFacebook, faGithub, faQq } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios';
 import { subscribe } from './utils.js';
-import { Spin, Button } from 'antd';
+import { Spin, Button, Image } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -81,44 +81,43 @@ function Book() {
         numbers.push(i);
     }
 
+    // const requireContext = require.context("../figures/pic", true, /^\.\/.*\.jpg$/);
+    // const images = requireContext.keys().map(requireContext);
+
     return (
         <div>
-            <div className="page-container">
+            <header className="header_section">
+                <div className="container-fluid">
+                    <nav className="navbar navbar-expand-lg custom_nav-container ">
+                        <a className="navbar-brand" href="/">
+                            <span>
+                                Read-Book
+                            </span>
+                        </a>
 
-                <div className="scrollable-section-lg">
-                    <div className="hero_area">
-                        <header className="header_section">
-                            <div className="container-fluid">
-                                <nav className="navbar navbar-expand-lg custom_nav-container ">
-                                    <a className="navbar-brand" href="/">
-                                        <span>
-                                            Read-Book
-                                        </span>
-                                    </a>
+                        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span className=""> </span>
+                        </button>
 
-                                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                                        <span className=""> </span>
-                                    </button>
-
-                                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                                        <ul className="navbar-nav">
-                                            <li className="nav-item">
-                                                <a className="nav-link pl-lg-0" href="/">Home </a>
-                                            </li>
-                                            <li className="nav-item">
-                                                <a className="nav-link" href="/books"> Books</a>
-                                            </li>
-                                            <li className="nav-item">
-                                                <a className="nav-link" href="/test">Test</a>
-                                            </li>
-                                            <li className="nav-item">
-                                                <a className="nav-link" href="/statistics"> Statistics </a>
-                                            </li>
-                                            <li className="nav-item active">
-                                                <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
-                                            </li>
-                                            {/* {%if status == 0 or status == 1%}
+                        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul className="navbar-nav">
+                                <li className="nav-item">
+                                    <a className="nav-link pl-lg-0" href="/">Home </a>
+                                </li>
+                                <li className="nav-item">
+                                    <a className="nav-link" href="/books"> Books</a>
+                                </li>
+                                <li className="nav-item">
+                                    <a className="nav-link" href="/test">Test</a>
+                                </li>
+                                <li className="nav-item">
+                                    <a className="nav-link" href="/statistics"> Statistics </a>
+                                </li>
+                                <li className="nav-item active">
+                                    <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
+                                </li>
+                                {/* {%if status == 0 or status == 1%}
                                         <li className="nav-item active">
                                             <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
                                         </li>
@@ -127,25 +126,32 @@ function Book() {
                                             <a className="nav-link" href="/profile">Profile <span className="sr-only">(current)</span> </a>
                                         </li>
                                         {% endif %} */}
-                                        </ul>
-                                    </div>
-                                </nav>
-                            </div>
-                        </header>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </header>
+            <div className="page-container">
+                <div className="scrollable-section-lg">
+                    <div className="hero_area">
+
 
                         <section className="about_section layout_padding">
                             <div className="container ">
                                 <div className="row">
                                     {Array.isArray(data.data) ? (
                                         data.data.map((item) => (
-                                            <div className="col-3" key={item.id} id={item.id}>
+                                            <div className="col-4" key={item.id} id={item.id}>
                                                 <div className="detail-box">
-                                                    <h5>{item.id}</h5>
-                                                    <h5>{item.name}</h5>
-                                                    <h5>{item.author}</h5>
-                                                    <button onClick={() => handleClick(item.id)}>详情</button>
+                                                    <h5><Image style={{ width: "100%", height: "480px" }} src={require(`../figures/pic/${item.id}.jpg`)} alt="" /></h5>
+                                                    <h5>排名：{item.id}</h5>
+                                                    <h5>书名：{item.name}</h5>
+                                                    <h5>作者：{item.author}</h5>
+                                                    <button className="col-8" onClick={() => handleClick(item.id)}>详情</button>
                                                 </div>
+                                                <br></br>
                                             </div>
+
                                         ))
                                     ) : (
                                         <Spin />
@@ -242,37 +248,6 @@ function Book() {
                 </div>
 
                 <div className="scrollable-section-sm">
-                    {/* 做悬浮导航栏 */}
-                    {/* <div className="container">
-
-                            {Array.isArray(data.data) ? (
-                                data.data.map((item, index) => {
-                                    if (index % 4 === 0) {
-                                        return (
-                                            <div className='row'>
-                                                <div key={item.id}>
-                                                    <a className="sm equal-width" href={'#' + item.id}>{item.id}{'\u00A0\u00A0'}</a>
-                                                </div>
-                                                <div key={item.id + 1}>
-                                                    <a className="sm equal-width" href={'#' + item.id + 1}>{item.id + 1}{'\u00A0\u00A0'}</a>
-                                                </div>
-                                                <div key={item.id + 2}>
-                                                    <a className="sm equal-width" href={'#' + item.id + 2}>{item.id + 2}{'\u00A0\u00A0'}</a>
-                                                </div>
-                                                <div key={item.id + 3}>
-                                                    <a className="sm equal-width" href={'#' + item.id + 3}>{item.id + 3}{'\u00A0\u00A0'}</a>
-                                                </div>
-                                            </div>
-                                        );
-                                    } else {
-                                        return null;
-                                    }
-                                })
-                            ) : (
-                                <Spin />
-                            )}
-
-                        </div> */}
 
                     <div className="flex-container">
                         {Array.isArray(data.data) ? (
@@ -284,7 +259,7 @@ function Book() {
                                         return (
                                             <div className="flex-item" key={temp}>
                                                 {Array.from({ length: colNum }, (_, subIndex) => (
-                                                    <Button className="sm child-flex-item col-3" type="dashed" key={item.id + subIndex} href={'#' + (item.id + subIndex)}>
+                                                    <Button type="text" className="sm child-flex-item col-3" key={item.id + subIndex} href={'#' + (item.id + subIndex)}>
                                                         {item.id + subIndex}{'\u00A0\u00A0'}
                                                     </Button>
 
@@ -302,8 +277,6 @@ function Book() {
                     </div>
                 </div>
             </div>
-
-
         </div>
     )
 }
