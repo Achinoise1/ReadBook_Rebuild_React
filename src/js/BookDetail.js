@@ -96,9 +96,7 @@ function BookDetail() {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-4">
-                            <div className="img-box">
-                                <img src={testImg} alt="" />
-                            </div>
+                            <img style={{ width: "100%", height: "100%" }} src={require(`../figures/pic/${coreData.id}.jpg`)} alt="" />
                         </div>
                         <div className="col-md-6">
 
@@ -135,7 +133,7 @@ function BookDetail() {
                 </div>
                 <br />
                 <br />
-                <div className="row align-items-center">
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                     {/* {%for j in range(0,5)%}
                                                 <div className="col">
                                                     <h5 className="text-center">&nbsp;</h5>
