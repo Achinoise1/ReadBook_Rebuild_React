@@ -15,7 +15,6 @@ import axios from 'axios';
 import { Spin } from 'antd';
 import { subscribe } from './utils.js';
 import { useLocation } from "react-router-dom";
-import testImg from '../figures/4.jpg'
 import { useEffect, useState } from "react";
 // import * as allBookImg from '../figures'
 

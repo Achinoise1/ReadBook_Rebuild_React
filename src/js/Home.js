@@ -19,10 +19,16 @@ import {
     faGithub, faQq
 } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios';
-import { subscribe } from './utils.js';
-import { useEffect } from 'react';
+import { subscribe, truncateText, indentTextStyle } from './utils.js';
+import { useEffect, useState } from 'react';
+import { Spin } from 'antd';
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+
 
 function Home() {
+
+    const [data, setData] = useState({});
 
     useEffect(() => {
 
@@ -31,10 +37,32 @@ function Home() {
                 console.log(error)
             });
         axios.get('/api/Home') // 替换为你的后端API URL
+            .then(response => {
+                setData(response.data);
+            })
             .catch(error => {
                 console.log(error)
             });
-    });
+    }, []);
+
+    //如果后边没加[]，首页会出现一个很搞笑的东西
+    // useEffect(() => {
+
+    //     axios.post('/api') // 替换为你的后端API URL
+    //         .catch(error => {
+    //             console.log(error)
+    //         });
+    //     axios.get('/api/Home') // 替换为你的后端API URL
+    //         .then(response => {
+    //             setData(response.data);
+    //         })
+    //         .catch(error => {
+    //             console.log(error)
+    //         });
+    // });
+
+    if (!data.data) return <Spin />
+    const coreData = data.data
 
     return (
         <div>
@@ -86,6 +114,70 @@ function Home() {
                 </header>
 
                 <section className="slider_section ">
+                    <Carousel infiniteLoop autoPlay interval={4000}>
+                        <div className="carousel slide">
+                            <div className="carousel-inner">
+                                <div className="carousel-item active">
+                                    <div className="container ">
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <div className="detail-box">
+                                                    <h5>
+                                                        Read-Book
+                                                    </h5>
+                                                    <h1>
+                                                        今天读什么？
+                                                    </h1>
+                                                    <p style={indentTextStyle}>
+                                                        {truncateText(coreData.brief)}
+                                                    </p>
+                                                    <a className="empty" href="/bookDetail/{{bookReID}}">详情</a>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-2"></div>
+                                            <div className="col-md-4">
+                                                <img src={require(`../figures/pic/${coreData.id}.jpg`)} className="img1" alt="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="carousel slide">
+                            <div className="carousel-inner">
+                                <div className="carousel-item active">
+                                    <div className="container ">
+                                        <div className="row">
+                                            <div className="col-md-6">
+                                                <div className="detail-box">
+                                                    <h5>
+                                                        Read-Book
+                                                    </h5>
+                                                    <h1>
+                                                        测一测 <br />
+                                                        掌握了多少知识？
+                                                    </h1>
+                                                    <p>
+                                                        随机选取题目测试，看看你对这些知识的了解程度。
+                                                    </p>
+                                                    <a href="/test">
+                                                        测试
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <img src={require("../figures/slider-img.png")} alt="" />
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </Carousel>
+                </section>
+
+                {/* <section className="slider_section ">
                     <div id="customCarousel1" className="carousel slide" data-ride="carousel">
                         <div className="carousel-inner">
                             <div className="carousel-item active">
@@ -99,28 +191,19 @@ function Home() {
                                                 <h1>
                                                     今天读什么？
                                                 </h1>
-                                                {/* {%if detail[13]|length >200%}
-                                                    <p>
-                                                        {{ detail[13]| truncate(200) }}..
-                                                    </p>
-                                                    {%else%}
-                                                    <p>
-                                                        {{ detail[13]}}
-                                                    </p>
-                                                    {% endif %} */}
+                                                <p style={indentTextStyle}>
+                                                    {truncateText(coreData.brief)}
+                                                </p>
                                                 <a className="empty" href="/bookDetail/{{bookReID}}">详情</a>
                                             </div>
                                         </div>
                                         <div className="col-md-2"></div>
                                         <div className="col-md-4">
-                                            <div className="img-box">
-                                                <img src="static/images/pic/{{bookReID+1}}.jpg" className="img1" alt="" />
-                                            </div>
+                                            <img src={require(`../figures/pic/${coreData.id}.jpg`)} className="img1" alt="" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            {/* <!-- 对应#2 test --> */}
                             <div className="carousel-item">
                                 <div className="container ">
                                     <div className="row">
@@ -163,7 +246,7 @@ function Home() {
                         </div>
 
                     </div>
-                </section>
+                </section> */}
 
                 <section className="info_section layout_padding2">
                     <div className="container">
