@@ -9,7 +9,7 @@ import {
     faFacebook,
     faGithub, faQq
 } from '@fortawesome/fontawesome-free-brands'
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { subscribe } from './utils.js';
 import axios from "axios";
 import { Spin } from 'antd';
@@ -18,14 +18,13 @@ import { justifyTextStyle } from './utils';
 import { Card } from "react-bootstrap";
 import { Button } from 'antd'
 
-function TestStart() {
+function TestResult() {
     const choice = ['A', 'B', 'C', 'D'];
-    const [userChoose, setUserChoose] = useState({});
+    const [cards, setCards] = useState({});
 
     const location = useLocation();
-    const { testType } = location.state;
-
-    const [ques, setQues] = useState({});
+    const { ques } = location.state
+    const { userChoose } = location.state
 
     const scrollToAnchor = (anchorName) => {
         if (anchorName) {
@@ -36,65 +35,33 @@ function TestStart() {
         }
     }
 
+    const show = () => {
+        console.log(userChoose)
+        console.log(ques.data)
+        console.log(cards.data.ans)     // 获取到所有的选择结果
+
+    }
+
     useEffect(() => {
         fetchData();
     }, []);
 
-    useEffect(() => {
-        //单选
-        $(function () {
-            $("#test-single li").click(function () {
-                if ($(this).hasClass('li-selected')) {
-                    // $(this).removeClass('li-selected');
-                    // $(this).attr('name', '');
-                } else {
-                    $(this).siblings('li').removeClass('li-selected');
-                    $(this).addClass('li-selected');
-                    $(this).siblings('li').attr('name', '');
-                    $(this).attr('name', 'li-selected');
-
-                }
-
-            });
-        });
-    })
-
-    const handleSingleClick = (uc) => {
-        setUserChoose(prevUserChoose => {
-            return {
-                ...prevUserChoose,
-                [uc.key]: uc.value
-            };
-        });
-    };
-
-    const coreData = ques.data
-    const navigate = useNavigate();
-    const show = () => {
-        const formData = new FormData();
-        formData.append('userChoice', JSON.stringify(userChoose));
-        axios.post('/api/Submit', formData)
-            .then(
-                navigate('/testResult', { state: { ques: ques, userChoose: userChoose } })
-            )
-            .catch(error => {
-                console.log(error)
-            })
-        console.log(userChoose)
-    }
-
     const fetchData = () => {
         const formData = new FormData();
-        formData.append('type', testType);
-        axios.post('/api/TestSelected', formData)
+        formData.append('questions', JSON.stringify(ques));
+        formData.append('choice', JSON.stringify(userChoose));
+        axios.post('/api/TestProcess', formData)
             .then(response => {
-                setQues(response.data)
+                setCards(response.data)
             })
             .catch(error => {
                 console.log(error);
             });
 
     }
+
+    const coreData = ques.data
+    console.log(cards)
 
 
     return (
@@ -142,45 +109,63 @@ function TestStart() {
             </header>
             <div className="page-container">
                 <div className="scrollable-section-lg">
-
-                    <section id="s0" className="catagory_section layout_padding0">
-                        <div className="catagory_container">
-                            <div className="container ">
-                                <div className="heading_container heading_center">
-                                    <h2>
-                                        测试开始
-                                    </h2>
-                                    <br />
-                                    <p style={{ fontSize: '18px' }}>
-                                        本次测试共有25个小题，分为选择题和判断题。请认真阅读每个小题，选择正确的答案。
-                                    </p>
-                                    <br />
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                    <br />
+                    <br />
+                    <br />
 
                     <div className="d-flex flex-column justify-content-center align-items-center">
                         {(coreData) ? (
-                            coreData.ques.map((item, indexOutSide) => (
-                                <Card className="w-75 test-card" id={indexOutSide + 1}>
+                            coreData.ques.map((itemOutside, indexOutside) => (
+                                <Card className="w-75 test-card" id={indexOutside + 1}>
                                     <Card.Body>
-                                        <div className='row' key={indexOutSide} >
-                                            <div className='col-2 test-id'>{indexOutSide + 1}</div>
+                                        <div className='row' key={indexOutside} >
+                                            <div className='col-2 test-id'>{indexOutside + 1}</div>
                                             <div style={justifyTextStyle} className='col-10'>
-                                                <Card.Title style={{ fontSize: '36px' }}><b>{item.Question}</b></Card.Title>
+                                                <Card.Title style={{ fontSize: '36px' }}><b>{itemOutside.Question}</b></Card.Title>
                                             </div>
                                         </div>
                                         <ul style={{ paddingInlineStart: '0px' }} id='test-single'>
-                                            {item.Options.map((item, indexInside) => {
+                                            {itemOutside.Options.map((item, indexInside) => {
                                                 return (
-                                                    <li key={indexInside} className='ori' value={item} onClick={() => handleSingleClick({ key: indexOutSide, value: item })}>
-                                                        <div className='row' >
-                                                            <Card.Text className='col-2' style={{ margin: '0px', fontSize: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{choice[indexInside]}</Card.Text>
-                                                            <Card.Text className='col-10' style={{ fontSize: '22px', textAlign: 'left', display: 'flex', alignItems: 'center' }}>{item}</Card.Text>
-                                                        </div>
-                                                    </li>
+                                                    (itemOutside.Options[indexInside] === itemOutside.Ans) ? (
+                                                        (userChoose && userChoose[indexOutside]) ? (
+                                                            // 用户选择了答案，用绿色显示正确答案
+                                                            <li className='li-right' key={indexInside} value={item} >
+                                                                <div className='row' >
+                                                                    <Card.Text className='col-2' style={{ margin: '0px', fontSize: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{choice[indexInside]}</Card.Text>
+                                                                    <Card.Text className='col-10' style={{ fontSize: '22px', textAlign: 'left', display: 'flex', alignItems: 'center' }}>{item}</Card.Text>
+                                                                </div>
+                                                            </li>
+                                                        ) : (
+                                                            // 用户没有选择答案，用蓝色显示正确答案
+                                                            <li className='li-empty' key={indexInside} value={item} >
+                                                                <div className='row' >
+                                                                    <Card.Text className='col-2' style={{ margin: '0px', fontSize: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{choice[indexInside]}</Card.Text>
+                                                                    <Card.Text className='col-10' style={{ fontSize: '22px', textAlign: 'left', display: 'flex', alignItems: 'center' }}>{item}</Card.Text>
+                                                                </div>
+                                                            </li>
+                                                        )
+                                                    ) : (
+                                                        (userChoose[indexOutside] === item) ? (
+                                                            // 用户选择了错误答案，用红色显示
+                                                            <li className='li-wrong' key={indexInside} value={item} >
+                                                                <div className='row' >
+                                                                    <Card.Text className='col-2' style={{ margin: '0px', fontSize: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{choice[indexInside]}</Card.Text>
+                                                                    <Card.Text className='col-10' style={{ fontSize: '22px', textAlign: 'left', display: 'flex', alignItems: 'center' }}>{item}</Card.Text>
+                                                                </div>
+                                                            </li>
+                                                        ) : (
+                                                            // 其他无关选项，不显示颜色
+                                                            <li key={indexInside} value={item} >
+                                                                <div className='row' >
+                                                                    <Card.Text className='col-2' style={{ margin: '0px', fontSize: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{choice[indexInside]}</Card.Text>
+                                                                    <Card.Text className='col-10' style={{ fontSize: '22px', textAlign: 'left', display: 'flex', alignItems: 'center' }}>{item}</Card.Text>
+                                                                </div>
+                                                            </li>
+                                                        )
+                                                    )
                                                 );
+
                                             })}
                                         </ul>
                                     </Card.Body>
@@ -292,7 +277,7 @@ function TestStart() {
                                             width: "25%"
                                         }}
                                     >
-                                        <Button type="text" className="sm child-flex-item" onClick={() => scrollToAnchor(index + 1)}>
+                                        <Button type='text' className="sm child-flex-item" onClick={() => scrollToAnchor(index + 1)}>
                                             {index + 1}{'\u00A0\u00A0'}
                                         </Button>
                                     </div>
@@ -310,4 +295,4 @@ function TestStart() {
     )
 }
 
-export default TestStart
+export default TestResult
