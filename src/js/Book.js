@@ -11,7 +11,7 @@ import {
 } from '@fortawesome/fontawesome-free-solid'
 import { faFacebook, faGithub, faQq } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios';
-import { subscribe } from './utils.js';
+import { subscribe, justifyTextStyle } from './utils.js';
 import { Spin, Button, Image } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
@@ -165,7 +165,7 @@ function Book() {
                             <div className="container">
                                 <div className="row">
                                     <div className="col-md-6 col-lg-4 info-col">
-                                        <div className="info_detail">
+                                        <div className="info_detail" style={justifyTextStyle}>
                                             <h4>
                                                 About Us
                                             </h4>
@@ -186,7 +186,7 @@ function Book() {
                                         </div>
                                     </div>
                                     <div className="col-md-6 col-lg-4 info-col">
-                                        <div className="info_contact">
+                                        <div className="info_contact" style={justifyTextStyle}>
                                             <h4>
                                                 Address
                                             </h4>
@@ -219,8 +219,8 @@ function Book() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-6 col-lg-4 info-col">
-                                        <div className="info_contact">
+                                    <div className="col-md-6 col-lg-4 info-col" >
+                                        <div className="info_contact" style={justifyTextStyle}>
                                             <h4>
                                                 Newsletter
                                             </h4>

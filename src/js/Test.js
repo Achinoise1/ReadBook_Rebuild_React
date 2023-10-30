@@ -19,7 +19,7 @@ import cat4 from '../figures/cat4.png';
 import cat5 from '../figures/cat5.png';
 import cat6 from '../figures/cat6.png';
 import { useNavigate } from 'react-router-dom';
-import { subscribe } from './utils.js';
+import { subscribe, justifyTextStyle } from './utils.js';
 
 
 function Test() {
@@ -245,7 +245,7 @@ function Test() {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-6 col-lg-4 info-col">
-                            <div className="info_detail">
+                            <div className="info_detail" style={justifyTextStyle}>
                                 <h4>
                                     About Us
                                 </h4>
@@ -266,7 +266,7 @@ function Test() {
                             </div>
                         </div>
                         <div className="col-md-6 col-lg-4 info-col">
-                            <div className="info_contact">
+                            <div className="info_contact" style={justifyTextStyle}>
                                 <h4>
                                     Address
                                 </h4>
@@ -299,8 +299,8 @@ function Test() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-6 col-lg-4 info-col">
-                            <div className="info_contact">
+                        <div className="col-md-6 col-lg-4 info-col" >
+                            <div className="info_contact" style={justifyTextStyle}>
                                 <h4>
                                     Newsletter
                                 </h4>

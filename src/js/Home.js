@@ -5,7 +5,7 @@ import '../css/ion.rangeSlider.min.css';
 import '../css/responsive.css';
 import '../css/style.css';
 import '../css/style.css.map';
-import React, { Component } from 'react'
+import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faAngleLeft, faAngleRight, faEnvelopeOpen, faPhone, faUniversity
@@ -19,7 +19,7 @@ import {
     faGithub, faQq
 } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios';
-import { subscribe, truncateText, indentTextStyle } from './utils.js';
+import { subscribe, truncateText, indentTextStyle, justifyTextStyle } from './utils.js';
 import { useEffect, useState } from 'react';
 import { Spin } from 'antd';
 import { Carousel } from 'react-responsive-carousel';
@@ -177,82 +177,11 @@ function Home() {
                     </Carousel>
                 </section>
 
-                {/* <section className="slider_section ">
-                    <div id="customCarousel1" className="carousel slide" data-ride="carousel">
-                        <div className="carousel-inner">
-                            <div className="carousel-item active">
-                                <div className="container ">
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <div className="detail-box">
-                                                <h5>
-                                                    Read-Book
-                                                </h5>
-                                                <h1>
-                                                    今天读什么？
-                                                </h1>
-                                                <p style={indentTextStyle}>
-                                                    {truncateText(coreData.brief)}
-                                                </p>
-                                                <a className="empty" href="/bookDetail/{{bookReID}}">详情</a>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-2"></div>
-                                        <div className="col-md-4">
-                                            <img src={require(`../figures/pic/${coreData.id}.jpg`)} className="img1" alt="" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="carousel-item">
-                                <div className="container ">
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <div className="detail-box">
-                                                <h5>
-                                                    Read-Book
-                                                </h5>
-                                                <h1>
-                                                    测一测 <br />
-                                                    掌握了多少知识？
-                                                </h1>
-                                                <p>
-                                                    随机选取题目测试，看看你对这些知识的了解程度。
-                                                </p>
-                                                <a href="/test">
-                                                    测试
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="img-box">
-                                                <img src="static/images/slider-img.png" alt="" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="carousel_btn_box">
-                            <a className="carousel-control-prev" href="#customCarousel1" role="button" data-slide="prev">
-                                <FontAwesomeIcon icon={faAngleLeft} />
-                                <span className="sr-only">Previous</span>
-                            </a>
-                            <a className="carousel-control-next" href="#customCarousel1" role="button" data-slide="next">
-                                <FontAwesomeIcon icon={faAngleRight} />
-                                <span className="sr-only">Next</span>
-                            </a>
-
-                        </div>
-
-                    </div>
-                </section> */}
-
                 <section className="info_section layout_padding2">
                     <div className="container">
                         <div className="row">
                             <div className="col-md-6 col-lg-4 info-col">
-                                <div className="info_detail">
+                                <div className="info_detail" style={justifyTextStyle}>
                                     <h4>
                                         About Us
                                     </h4>
@@ -273,7 +202,7 @@ function Home() {
                                 </div>
                             </div>
                             <div className="col-md-6 col-lg-4 info-col">
-                                <div className="info_contact">
+                                <div className="info_contact" style={justifyTextStyle}>
                                     <h4>
                                         Address
                                     </h4>
@@ -306,8 +235,8 @@ function Home() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-md-6 col-lg-4 info-col">
-                                <div className="info_contact">
+                            <div className="col-md-6 col-lg-4 info-col" >
+                                <div className="info_contact" style={justifyTextStyle}>
                                     <h4>
                                         Newsletter
                                     </h4>

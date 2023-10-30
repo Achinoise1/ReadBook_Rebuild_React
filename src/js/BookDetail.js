@@ -1,4 +1,3 @@
-import { Component } from "react";
 import '../../node_modules/font-awesome/less/font-awesome.less';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -13,7 +12,7 @@ import {
 } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios';
 import { Spin } from 'antd';
-import { subscribe } from './utils.js';
+import { subscribe, justifyTextStyle } from './utils.js';
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 // import * as allBookImg from '../figures'
@@ -169,7 +168,7 @@ function BookDetail() {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-6 col-lg-4 info-col">
-                            <div className="info_data">
+                            <div className="info_detail" style={justifyTextStyle}>
                                 <h4>
                                     About Us
                                 </h4>
@@ -190,7 +189,7 @@ function BookDetail() {
                             </div>
                         </div>
                         <div className="col-md-6 col-lg-4 info-col">
-                            <div className="info_contact">
+                            <div className="info_contact" style={justifyTextStyle}>
                                 <h4>
                                     Address
                                 </h4>
@@ -223,8 +222,8 @@ function BookDetail() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-md-6 col-lg-4 info-col">
-                            <div className="info_contact">
+                        <div className="col-md-6 col-lg-4 info-col" >
+                            <div className="info_contact" style={justifyTextStyle}>
                                 <h4>
                                     Newsletter
                                 </h4>
