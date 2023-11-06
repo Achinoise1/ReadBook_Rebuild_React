@@ -11,7 +11,7 @@ import {
 } from '@fortawesome/fontawesome-free-solid'
 import { faFacebook, faGithub, faQq } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios';
-import { subscribe, justifyTextStyle, LeftTextStyle, saveUser, getUser } from '../utils.js';
+import { subscribe, justifyTextStyle, LeftTextStyle, saveUser, getUser, goBack } from '../utils.js';
 import { Spin, Button, Image } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,7 +41,7 @@ function LoginRegister() {
         if (loginRes) {
             saveUser(loginRes.data);
             //loginRes改变了意味着获取到了数据，因此可以跳转
-            navigate('/');
+            goBack();
         }
     }, [loginRes])
 

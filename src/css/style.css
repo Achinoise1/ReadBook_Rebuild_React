@@ -610,7 +610,7 @@ a:focus {
 }
 
 .blog_section {
-  background-color: #f5f6f9;
+  background-color: #fff;
 }
 
 .blog_section .box {
@@ -1179,4 +1179,14 @@ li {
   padding: 20px;
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.linklike {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.linklike:hover {
+  color: red; /* 或其他你想要的鼠标悬停效果颜色 */
 }

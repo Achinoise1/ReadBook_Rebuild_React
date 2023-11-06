@@ -12,7 +12,7 @@ import {
 } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios';
 import { Spin } from 'antd';
-import { subscribe, justifyTextStyle, getUser } from './utils.js';
+import { subscribe, justifyTextStyle, getUser, goBack } from './utils.js';
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 // import * as allBookImg from '../figures'
@@ -40,6 +40,8 @@ function BookDetail() {
                 console.log(error);
             });
     };
+
+
 
     if (!data.data) return <Spin />
     const coreData = data.data
@@ -139,7 +141,7 @@ function BookDetail() {
                                                 {% endfor %} */}
                     <div className="col-md-offset-1">
                         <div className="btn-box m-auto">
-                            <a href="/books">
+                            <a onClick={() => goBack()}>
                                 <button>
                                     返回
                                 </button>

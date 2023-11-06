@@ -60,3 +60,8 @@ export function getUser() {
 export function removeUser() {
     store.remove(USER_KEY);
 }
+
+//返回上一个页面
+export function goBack() {
+    window.history.back()
+}

@@ -24,6 +24,7 @@ import { useEffect, useState } from 'react';
 import { Spin } from 'antd';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { useNavigate } from 'react-router-dom';
 
 
 function Home() {
@@ -44,6 +45,11 @@ function Home() {
                 console.log(error)
             });
     }, []);
+
+    const navigate = useNavigate();
+    const gotoBookDetail = (bookId) => {
+        navigate('/bookDetail', { state: { id: bookId } });
+    };
 
     //如果后边没加[]，首页会出现一个很搞笑的东西
     // useEffect(() => {
@@ -111,7 +117,7 @@ function Home() {
                 </header>
 
                 <section className="slider_section ">
-                    <Carousel infiniteLoop autoPlay interval={4000}>
+                    <Carousel infiniteLoop autoPlay interval={2500}>
                         <div className="carousel slide">
                             <div className="carousel-inner">
                                 <div className="carousel-item active">
@@ -128,7 +134,8 @@ function Home() {
                                                     <p style={indentTextStyle}>
                                                         {truncateText(coreData.brief)}
                                                     </p>
-                                                    <a className="empty" href="/bookDetail/{{bookReID}}">详情</a>
+                                                    {/* <a className="empty" href="/bookDetail/{{bookReID}}">详情</a> */}
+                                                    <a className="empty" onClick={() => gotoBookDetail(coreData.id)}>详情</a>
                                                 </div>
                                             </div>
                                             <div className="col-md-2"></div>

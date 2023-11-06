@@ -185,10 +185,11 @@ a:hover {
   text-decoration: underline;
 }
 
-a:not([href]):not([tabindex]) {
+/*如果加了这个a标签不是href的时候不显示链接*/
+/* a:not([href]):not([tabindex]) {
   color: inherit;
   text-decoration: none;
-}
+} */
 
 a:not([href]):not([tabindex]):hover,
 a:not([href]):not([tabindex]):focus {
