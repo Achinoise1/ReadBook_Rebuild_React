@@ -1,4 +1,6 @@
 // utils.js
+import store from "store";
+const USER_KEY = 'ReadBook';
 
 export function subscribe() {
     alert("Subscribe Success!");
@@ -37,4 +39,24 @@ export function truncateText(text) {
         // 不需要截取，直接返回原文本
         return text;
     }
+}
+
+
+
+//保存用户
+export function saveUser(user) {
+    store.set(USER_KEY, user);// 登录成功的时候，读取用户数据并放在内存中
+    // const user = result.data;
+    // // memoryUtils.user = user;
+    // storageUtils.saveUser(user);
+}
+
+// 读取用户
+export function getUser() {
+    return store.get(USER_KEY) || {}
+}
+
+// 删除用户
+export function removeUser() {
+    store.remove(USER_KEY);
 }
