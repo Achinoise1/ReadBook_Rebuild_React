@@ -12,7 +12,7 @@ import {
 } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios';
 import { Spin } from 'antd';
-import { subscribe, justifyTextStyle } from './utils.js';
+import { subscribe, justifyTextStyle, getUser } from './utils.js';
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 // import * as allBookImg from '../figures'
@@ -74,15 +74,15 @@ function BookDetail() {
                                 <li className="nav-item">
                                     <a className="nav-link" href="/statistics"> Statistics </a>
                                 </li>
-                                {/* {%if status == 0 or status == 1%}
-                                            <li className="nav-item active">
-                                                <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
-                                            </li>
-                                            {% elif status == 2%}
-                                            <li className="nav-item active">
-                                                <a className="nav-link" href="/profile">Profile <span className="sr-only">(current)</span> </a>
-                                            </li>
-                                            {% endif %} */}
+                                {(typeof getUser() === 'object' && Object.keys(getUser()).length === 0) ? (
+                                    <li className="nav-item active">
+                                        <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
+                                    </li>
+                                ) : (
+                                    <li className="nav-item active">
+                                        <a className="nav-link" href="/profile">Profile <span className="sr-only">(current)</span> </a>
+                                    </li>
+                                )}
                             </ul>
                         </div>
                     </nav>

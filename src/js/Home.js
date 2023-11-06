@@ -19,7 +19,7 @@ import {
     faGithub, faQq
 } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios';
-import { subscribe, truncateText, indentTextStyle, justifyTextStyle } from './utils.js';
+import { subscribe, truncateText, indentTextStyle, justifyTextStyle, getUser } from './utils.js';
 import { useEffect, useState } from 'react';
 import { Spin } from 'antd';
 import { Carousel } from 'react-responsive-carousel';
@@ -63,7 +63,7 @@ function Home() {
 
     if (!data.data) return <Spin />
     const coreData = data.data
-
+    console.log(getUser())
     return (
         <div>
             <div className="hero_area">
@@ -95,18 +95,15 @@ function Home() {
                                     <li className="nav-item">
                                         <a className="nav-link" href="/statistics"> Statistics </a>
                                     </li>
-                                    <li className="nav-item active">
-                                        <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
-                                    </li>
-                                    {/* {%if status == 0 or status == 1%}
+                                    {(typeof getUser() === 'object' && Object.keys(getUser()).length === 0) ? (
                                         <li className="nav-item active">
                                             <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
                                         </li>
-                                        {% elif status == 2%}
+                                    ) : (
                                         <li className="nav-item active">
                                             <a className="nav-link" href="/profile">Profile <span className="sr-only">(current)</span> </a>
                                         </li>
-                                        {% endif %} */}
+                                    )}
                                 </ul>
                             </div>
                         </nav>

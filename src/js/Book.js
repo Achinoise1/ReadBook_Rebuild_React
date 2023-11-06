@@ -11,7 +11,7 @@ import {
 } from '@fortawesome/fontawesome-free-solid'
 import { faFacebook, faGithub, faQq } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios';
-import { subscribe, justifyTextStyle } from './utils.js';
+import { subscribe, justifyTextStyle, getUser } from './utils.js';
 import { Spin, Button, Image } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
@@ -114,18 +114,15 @@ function Book() {
                                 <li className="nav-item">
                                     <a className="nav-link" href="/statistics"> Statistics </a>
                                 </li>
-                                <li className="nav-item active">
-                                    <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
-                                </li>
-                                {/* {%if status == 0 or status == 1%}
-                                        <li className="nav-item active">
-                                            <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
-                                        </li>
-                                        {% elif status == 2%}
-                                        <li className="nav-item active">
-                                            <a className="nav-link" href="/profile">Profile <span className="sr-only">(current)</span> </a>
-                                        </li>
-                                        {% endif %} */}
+                                {(typeof getUser() === 'object' && Object.keys(getUser()).length === 0) ? (
+                                    <li className="nav-item active">
+                                        <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
+                                    </li>
+                                ) : (
+                                    <li className="nav-item active">
+                                        <a className="nav-link" href="/profile">Profile <span className="sr-only">(current)</span> </a>
+                                    </li>
+                                )}
                             </ul>
                         </div>
                     </nav>
@@ -143,7 +140,7 @@ function Book() {
                                         data.data.map((item) => (
                                             <div className="col-4" key={item.id} id={item.id}>
                                                 <div className="detail-box">
-                                                    <h5><Image style={{ width: "100%", height: "480px" }} src={require(`../figures/pic/${item.id}.jpg`)} alt="" /></h5>
+                                                    <h5><Image style={{ width: "100%", height: "480px" }} preview={false} src={require(`../figures/pic/${item.id}.jpg`)} alt="" /></h5>
                                                     <h5>排名：{item.id}</h5>
                                                     <h5>书名：{item.name}</h5>
                                                     <h5>作者：{item.author}</h5>
