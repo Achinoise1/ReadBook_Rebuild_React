@@ -17,6 +17,7 @@ import '../css/style.css';
 import { justifyTextStyle } from './utils';
 import { Card } from "react-bootstrap";
 import { Button } from 'antd'
+import { Link } from 'react-router-dom';
 
 function TestResult() {
     const choice = ['A', 'B', 'C', 'D'];
@@ -176,8 +177,11 @@ function TestResult() {
                             // 100003——数据不可用
                         )}
 
-
-                        <div className='click-box' onClick={show}>提交</div>
+                        <div>
+                            <Link className='click-box' to='/'>返回首页</Link>
+                            &emsp;
+                            <Link className='click-box' to='/statistics'>返回数据页</Link>
+                        </div>
                     </div>
 
                     <br />
