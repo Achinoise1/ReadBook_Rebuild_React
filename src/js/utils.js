@@ -3,3 +3,38 @@
 export function subscribe() {
     alert("Subscribe Success!");
 }
+
+// 首行缩进
+export const indentTextStyle = {
+    textIndent: '2em',  // 设置首行缩进为2个字符
+    textAlign: 'left'  // 靠左对齐
+};
+
+export const LeftTextStyle = {
+    textAlign: 'left'  // 靠左对齐
+};
+
+// 两端对齐
+export const justifyTextStyle = {
+    textAlign: 'justify'
+};
+
+export const ItemCenter = {
+    display: 'flex',
+    justifyContent: 'center', // 控制水平居中
+    alignItems: 'center' // 控制垂直居中
+}
+
+// 假设你的文本内容存在于一个变量 text 中
+
+const MAX_LENGTH = 200;  // 定义最大文本长度
+
+export function truncateText(text) {
+    if (text.length > MAX_LENGTH) {
+        // 截取文本，保留前200个字符加省略号
+        return text.substring(0, MAX_LENGTH) + '...';
+    } else {
+        // 不需要截取，直接返回原文本
+        return text;
+    }
+}
