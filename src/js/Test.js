@@ -19,7 +19,7 @@ import cat4 from '../figures/cat4.png';
 import cat5 from '../figures/cat5.png';
 import cat6 from '../figures/cat6.png';
 import { useNavigate } from 'react-router-dom';
-import { subscribe, justifyTextStyle } from './utils.js';
+import { subscribe, justifyTextStyle, getUser } from './utils.js';
 
 
 function Test() {
@@ -131,15 +131,15 @@ function Test() {
                                 <li className="nav-item">
                                     <a className="nav-link" href="/statistics"> Statistics </a>
                                 </li>
-                                {/* {%if status == 0 or status == 1%}
-                        <li className="nav-item active">
-                            <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
-                        </li>
-                        {% elif status == 2%}
-                        <li className="nav-item active">
-                            <a className="nav-link" href="/profile">Profile <span className="sr-only">(current)</span> </a>
-                        </li>
-                        {% endif %} */}
+                                {(typeof getUser() === 'object' && Object.keys(getUser()).length === 0) ? (
+                                    <li className="nav-item active">
+                                        <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
+                                    </li>
+                                ) : (
+                                    <li className="nav-item active">
+                                        <a className="nav-link" href="/profile">Profile <span className="sr-only">(current)</span> </a>
+                                    </li>
+                                )}
                             </ul>
                         </div>
                     </nav>
@@ -149,95 +149,109 @@ function Test() {
 
             <section id="s0" className="catagory_section layout_padding">
                 <div className="catagory_container">
-                    <div className="container ">
-                        <div className="heading_container heading_center">
-                            <h2>
-                                Books Categories
-                            </h2>
-                            <p>
-                                选择一个类别，点击按钮开始测试
-                            </p>
-                        </div>
-                        <div className="row">
-                            <div className="col-sm-6 col-md-4 ">
-                                <div className="box ">
-                                    <div className="img-box selected" value="random">
-                                        <img src={cat1} alt="" />
-                                    </div>
-                                    <div className="detail-box">
-                                        <h5 id="random" >
-                                            随机
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-sm-6 col-md-4 ">
-                                <div className="box ">
-                                    <div className="img-box" value="figure">
-                                        <img src={cat2} alt="" />
-                                    </div>
-                                    <div className="detail-box">
-                                        <h5 id="figure">
-                                            人物形象
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-sm-6 col-md-4 ">
-                                <div className="box ">
-                                    <div className="img-box" value="writer">
-                                        <img src={cat3} alt="" />
-                                    </div>
-                                    <div className="detail-box">
-                                        <h5 id="writer">
-                                            作者
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-sm-6 col-md-4 ">
-                                <div className="box ">
-                                    <div className="img-box" value="main">
-                                        <img src={cat4} alt="" />
-                                    </div>
-                                    <div className="detail-box">
-                                        <h5 id="main">
-                                            主旨
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-sm-6 col-md-4 ">
-                                <div className="box ">
-                                    <div className="img-box" value="content">
-                                        <img src={cat5} alt="" />
-                                    </div>
-                                    <div className="detail-box">
-                                        <h5 id="content">
-                                            情节
-                                        </h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-sm-6 col-md-4 ">
-                                <div className="box ">
-                                    <div className="img-box" value="detail">
-                                        <img src={cat6} alt="" />
-                                    </div>
-                                    <div className="detail-box">
-                                        <h5 id="detail">
-                                            细节
-                                        </h5>
-                                    </div>
-                                </div>
+                    {(typeof getUser() === 'object' && Object.keys(getUser()).length === 0) ? (
+                        <div className="container ">
+                            <div className="heading_container heading_center">
+                                <h1>
+                                    <b>请先<a href='/login'>登录</a></b>
+                                </h1>
+                                <p style={{ fontSize: "24px" }}>
+                                    登录后即可进行测试
+                                </p>
                             </div>
                         </div>
-                        <div className="catagory_container">
-                            <div className="btn-box">
-                                <a onClick={handleClick}>开始测试</a>
+                    ) : (
+                        <div className="container ">
+                            <div className="heading_container heading_center">
+                                <h2>
+                                    Books Categories
+                                </h2>
+                                <p>
+                                    选择一个类别，点击按钮开始测试
+                                </p>
+                            </div>
+                            <div className="row">
+                                <div className="col-sm-6 col-md-4 ">
+                                    <div className="box ">
+                                        <div className="img-box selected" value="random">
+                                            <img src={cat1} alt="" />
+                                        </div>
+                                        <div className="detail-box">
+                                            <h5 id="random" >
+                                                随机
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-sm-6 col-md-4 ">
+                                    <div className="box ">
+                                        <div className="img-box" value="figure">
+                                            <img src={cat2} alt="" />
+                                        </div>
+                                        <div className="detail-box">
+                                            <h5 id="figure">
+                                                人物形象
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-sm-6 col-md-4 ">
+                                    <div className="box ">
+                                        <div className="img-box" value="writer">
+                                            <img src={cat3} alt="" />
+                                        </div>
+                                        <div className="detail-box">
+                                            <h5 id="writer">
+                                                作者
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-sm-6 col-md-4 ">
+                                    <div className="box ">
+                                        <div className="img-box" value="main">
+                                            <img src={cat4} alt="" />
+                                        </div>
+                                        <div className="detail-box">
+                                            <h5 id="main">
+                                                主旨
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-sm-6 col-md-4 ">
+                                    <div className="box ">
+                                        <div className="img-box" value="content">
+                                            <img src={cat5} alt="" />
+                                        </div>
+                                        <div className="detail-box">
+                                            <h5 id="content">
+                                                情节
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-sm-6 col-md-4 ">
+                                    <div className="box ">
+                                        <div className="img-box" value="detail">
+                                            <img src={cat6} alt="" />
+                                        </div>
+                                        <div className="detail-box">
+                                            <h5 id="detail">
+                                                细节
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="catagory_container">
+                                <div className="btn-box">
+                                    <a onClick={handleClick}>开始测试</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
+
                 </div>
             </section>
 

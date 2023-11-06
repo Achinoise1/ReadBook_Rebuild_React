@@ -9,7 +9,7 @@ import {
     faGithub, faQq
 } from '@fortawesome/fontawesome-free-brands'
 import { useLocation, useNavigate } from "react-router-dom";
-import { subscribe, justifyTextStyle } from './utils.js';
+import { subscribe, justifyTextStyle, getUser } from './utils.js';
 import axios from "axios";
 import '../css/style.css';
 import { Progress, Space } from 'antd';
@@ -21,16 +21,18 @@ function Statistics() {
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
-        const formData = new FormData();
-        formData.append('userId', 2);
-        axios.post('/api/Statistics', formData)
-            .then(response => {
-                setRes(response.data.data);
-                setIsLoaded(true); // 设置 isLoaded 为 true
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        if (typeof getUser() != 'object' || Object.keys(getUser()).length != 0) {
+            const formData = new FormData();
+            formData.append('userId', getUser().id);
+            axios.post('/api/Statistics', formData)
+                .then(response => {
+                    setRes(response.data.data);
+                    setIsLoaded(true); // 设置 isLoaded 为 true
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
     }, [])
 
     const data = (res && res.Testscore) ? [
@@ -76,7 +78,6 @@ function Statistics() {
             };
         }
     }, [isLoaded]);
-
     return (
         <div>
             <div >
@@ -107,14 +108,15 @@ function Statistics() {
                                     <li className="nav-item">
                                         <a className="nav-link" href="/statistics"> Statistics </a>
                                     </li>
-                                    {/*                                         
+                                    {(typeof getUser() === 'object' && Object.keys(getUser()).length === 0) ? (
                                         <li className="nav-item active">
                                             <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
                                         </li>
-                                        
+                                    ) : (
                                         <li className="nav-item active">
                                             <a className="nav-link" href="/profile">Profile <span className="sr-only">(current)</span> </a>
-                                        </li> */}
+                                        </li>
+                                    )}
 
                                 </ul>
                             </div>
@@ -125,177 +127,189 @@ function Statistics() {
             </div>
 
             <section className="blog_section layout_padding">
-                <div className="container">
-
-                    <div className="heading_container heading_center">
-                        <h2>
-                            历史数据
-                        </h2>
-                    </div>
-
-                    <br /><br />
-                    <div className="row">
-                        <div className="col-md-5" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                                <div style={{ marginBottom: "20px" }}>
-                                    <Space>
-                                        <Progress type="circle" percent={res.avgAccuracy} />
-                                        <Progress type="circle" percent={res.lastAccuracy} />
-                                        {/* <CompareChartsDemo /> */}
-                                    </Space>
-                                </div>
-
-                                <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                    <div id="result-container" style={{ width: "300px", height: "300px" }}></div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div className="col-md-7" style={justifyTextStyle}>
-                            <div>
-                                用户{res.username}：
-                            </div>
-                            <br />
-                            <div>
-                                &emsp;您共测试<b style={{ fontSize: '20px' }}>{res.times}</b>次，
-                                平均用时<b style={{ fontSize: '20px' }}>{res.avgDuration}</b>，
-                                正确率为<b style={{ fontSize: '20px' }}>{res.avgAccuracy}%</b>。
-                                最近一次在<b style={{ fontSize: '20px' }}>{res.lastTime}</b>测试，
-                                用时<b style={{ fontSize: '20px' }}>{res.lastDuration}</b>，
-                                正确率为<b style={{ fontSize: '20px' }}>{res.lastAccuracy}%</b>。
-                            </div>
-                            <br />
-                            <div>
-                                &emsp;综合来看，您对<span style={{ fontSize: '20px', fontWeight: 'bold' }}>总体知识</span>的掌握程度：
-                                {(() => {
-                                    if (res.avgAccuracy < 60) {
-                                        return <b style={{ fontSize: '20px' }}>仍有待提高。</b>;
-                                    } else if (res.avgAccuracy < 70) {
-                                        return <b style={{ fontSize: '20px' }}>为一般。</b>;
-                                    } else if (res.avgAccuracy < 80) {
-                                        return <b style={{ fontSize: '20px' }}>为较好。</b>;
-                                    } else if (res.avgAccuracy < 90) {
-                                        return <b style={{ fontSize: '20px' }}>为良好。</b>;
-                                    } else {
-                                        return <b style={{ fontSize: '20px' }}>为优秀。</b>;
-                                    }
-                                })()}
-                                <br />
-                            </div>
-                            <div>
-                                &emsp;其中，您对各类书籍中<span style={{ fontSize: '20px', fontWeight: 'bold' }}>人物部分</span>知识掌握程度
-                                {(() => {
-                                    if (res.Testscore && res.Testscore[5] < 60) {
-                                        return <b style={{ fontSize: '20px' }}>仍有待提高。</b>;
-                                    } else if (res.Testscore && res.Testscore[5] < 70) {
-                                        return <b style={{ fontSize: '20px' }}>为一般。</b>;
-                                    } else if (res.Testscore && res.Testscore[5] < 80) {
-                                        return <b style={{ fontSize: '20px' }}>为较好。</b>;
-                                    } else if (res.Testscore && res.Testscore[5] < 90) {
-                                        return <b style={{ fontSize: '20px' }}>为良好。</b>;
-                                    } else {
-                                        return <b style={{ fontSize: '20px' }}>为优秀。</b>;
-                                    }
-                                })()}
-                                <br />
-                            </div>
-                            <div>
-                                &emsp;其中，您对各类书籍中<span style={{ fontSize: '20px', fontWeight: 'bold' }}>作者部分</span>知识掌握程度
-                                {(() => {
-                                    if (res.Testscore && res.Testscore[6] < 60) {
-                                        return <b style={{ fontSize: '20px' }}>仍有待提高。</b>;
-                                    } else if (res.Testscore && res.Testscore[6] < 70) {
-                                        return <b style={{ fontSize: '20px' }}>为一般。</b>;
-                                    } else if (res.Testscore && res.Testscore[6] < 80) {
-                                        return <b style={{ fontSize: '20px' }}>为较好。</b>;
-                                    } else if (res.Testscore && res.Testscore[6] < 90) {
-                                        return <b style={{ fontSize: '20px' }}>为良好。</b>;
-                                    } else {
-                                        return <b style={{ fontSize: '20px' }}>为优秀。</b>;
-                                    }
-                                })()}
-                                <br />
-                            </div>
-                            <div>
-                                &emsp;其中，您对各类书籍中<span style={{ fontSize: '20px', fontWeight: 'bold' }}>主旨部分</span>知识掌握程度
-                                {(() => {
-                                    if (res.Testscore && res.Testscore[7] < 60) {
-                                        return <b style={{ fontSize: '20px' }}>仍有待提高。</b>;
-                                    } else if (res.Testscore && res.Testscore[7] < 70) {
-                                        return <b style={{ fontSize: '20px' }}>为一般。</b>;
-                                    } else if (res.Testscore && res.Testscore[7] < 80) {
-                                        return <b style={{ fontSize: '20px' }}>为较好。</b>;
-                                    } else if (res.Testscore && res.Testscore[7] < 90) {
-                                        return <b style={{ fontSize: '20px' }}>为良好。</b>;
-                                    } else {
-                                        return <b style={{ fontSize: '20px' }}>为优秀。</b>;
-                                    }
-                                })()}
-                                <br />
-                            </div>
-                            <div>
-                                &emsp;其中，您对各类书籍中<span style={{ fontSize: '20px', fontWeight: 'bold' }}>情节部分</span>知识掌握程度
-                                {(() => {
-                                    if (res.Testscore && res.Testscore[8] < 60) {
-                                        return <b style={{ fontSize: '20px' }}>仍有待提高。</b>;
-                                    } else if (res.Testscore && res.Testscore[8] < 70) {
-                                        return <b style={{ fontSize: '20px' }}>为一般。</b>;
-                                    } else if (res.Testscore && res.Testscore[8] < 80) {
-                                        return <b style={{ fontSize: '20px' }}>为较好。</b>;
-                                    } else if (res.Testscore && res.Testscore[8] < 90) {
-                                        return <b style={{ fontSize: '20px' }}>为良好。</b>;
-                                    } else {
-                                        return <b style={{ fontSize: '20px' }}>为优秀。</b>;
-                                    }
-                                })()}
-                                <br />
-                            </div>
-                            <div>
-                                &emsp;其中，您对各类书籍中<span style={{ fontSize: '20px', fontWeight: 'bold' }}>细节部分</span>知识掌握程度
-                                {(() => {
-                                    if (res.Testscore && res.Testscore[9] < 60) {
-                                        return <b style={{ fontSize: '20px' }}>仍有待提高。</b>;
-                                    } else if (res.Testscore && res.Testscore[9] < 70) {
-                                        return <b style={{ fontSize: '20px' }}>为一般。</b>;
-                                    } else if (res.Testscore && res.Testscore[9] < 80) {
-                                        return <b style={{ fontSize: '20px' }}>为较好。</b>;
-                                    } else if (res.Testscore && res.Testscore[9] < 90) {
-                                        return <b style={{ fontSize: '20px' }}>为良好。</b>;
-                                    } else {
-                                        return <b style={{ fontSize: '20px' }}>为优秀。</b>;
-                                    }
-                                })()}
-                                <br />
-                            </div>
-
-                            <div>
-                                <br /><br />
-                                {(() => {
-                                    if (res.avgAccuracy < 60) {
-                                        return <b style={{ fontSize: '20px' }}>如果不读书，行万里路，也只是个邮差——钱钟书</b>;
-                                    } else if (res.avgAccuracy < 70) {
-                                        return <b style={{ fontSize: '20px' }}>只要打开书，就随时打开了一个崭新的世界——《人民日报》</b>;
-                                    } else if (res.avgAccuracy < 80) {
-                                        return <b style={{ fontSize: '20px' }}>无论是驱赶迷茫，还是对抗平庸，读书都是最简单也最实用的方法</b>;
-                                    } else if (res.avgAccuracy < 90) {
-                                        return <b style={{ fontSize: '20px' }}>世界上任何一个书籍都不能给你带来好运，但他们能让你悄悄地成为自己——赫尔曼·黑塞</b>;
-                                    } else {
-                                        return <b style={{ fontSize: '20px' }}>脚步丈量不到的地方，书可以；眼睛到不了的地方，书可以——《人民日报》</b>;
-                                    }
-                                })()}
-                                <br />
-                            </div>
-
+                {(typeof getUser() === 'object' && Object.keys(getUser()).length === 0) ? (
+                    <div className="container ">
+                        <div className="heading_container heading_center">
+                            <h1>
+                                <b>请先<a href='/login'>登录</a></b>
+                            </h1>
+                            <p style={{ fontSize: "24px" }}>
+                                登录后即可查看结果
+                            </p>
                         </div>
                     </div>
+                ) : (
+                    <div className="container">
 
-                    {/* <div className="heading_container heading_center">
+                        <div className="heading_container heading_center">
+                            <h2>
+                                历史数据
+                            </h2>
+                        </div>
+
+                        <br /><br />
+                        <div className="row">
+                            <div className="col-md-5" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                                    <div style={{ marginBottom: "20px" }}>
+                                        <Space>
+                                            <Progress type="circle" percent={res.avgAccuracy} />
+                                            <Progress type="circle" percent={res.lastAccuracy} />
+                                            {/* <CompareChartsDemo /> */}
+                                        </Space>
+                                    </div>
+
+                                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                        <div id="result-container" style={{ width: "300px", height: "300px" }}></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div className="col-md-7" style={justifyTextStyle}>
+                                <div>
+                                    用户&emsp;<b style={{ fontSize: '20px' }}>{getUser().name}</b>：
+                                </div>
+                                <br />
+                                <div>
+                                    &emsp;您共测试<b style={{ fontSize: '20px' }}>{res.times}</b>次，
+                                    平均用时<b style={{ fontSize: '20px' }}>{res.avgDuration}</b>，
+                                    正确率为<b style={{ fontSize: '20px' }}>{res.avgAccuracy}%</b>。
+                                    最近一次在<b style={{ fontSize: '20px' }}>{res.lastTime}</b>测试，
+                                    用时<b style={{ fontSize: '20px' }}>{res.lastDuration}</b>，
+                                    正确率为<b style={{ fontSize: '20px' }}>{res.lastAccuracy}%</b>。
+                                </div>
+                                <br />
+                                <div>
+                                    &emsp;综合来看，您对<span style={{ fontSize: '20px', fontWeight: 'bold' }}>总体知识</span>的掌握程度：
+                                    {(() => {
+                                        if (res.avgAccuracy < 60) {
+                                            return <b style={{ fontSize: '20px' }}>仍有待提高。</b>;
+                                        } else if (res.avgAccuracy < 70) {
+                                            return <b style={{ fontSize: '20px' }}>为一般。</b>;
+                                        } else if (res.avgAccuracy < 80) {
+                                            return <b style={{ fontSize: '20px' }}>为较好。</b>;
+                                        } else if (res.avgAccuracy < 90) {
+                                            return <b style={{ fontSize: '20px' }}>为良好。</b>;
+                                        } else {
+                                            return <b style={{ fontSize: '20px' }}>为优秀。</b>;
+                                        }
+                                    })()}
+                                    <br />
+                                </div>
+                                <div>
+                                    &emsp;其中，您对各类书籍中<span style={{ fontSize: '20px', fontWeight: 'bold' }}>人物部分</span>知识掌握程度
+                                    {(() => {
+                                        if (res.Testscore && res.Testscore[5] < 60) {
+                                            return <b style={{ fontSize: '20px' }}>仍有待提高。</b>;
+                                        } else if (res.Testscore && res.Testscore[5] < 70) {
+                                            return <b style={{ fontSize: '20px' }}>为一般。</b>;
+                                        } else if (res.Testscore && res.Testscore[5] < 80) {
+                                            return <b style={{ fontSize: '20px' }}>为较好。</b>;
+                                        } else if (res.Testscore && res.Testscore[5] < 90) {
+                                            return <b style={{ fontSize: '20px' }}>为良好。</b>;
+                                        } else {
+                                            return <b style={{ fontSize: '20px' }}>为优秀。</b>;
+                                        }
+                                    })()}
+                                    <br />
+                                </div>
+                                <div>
+                                    &emsp;其中，您对各类书籍中<span style={{ fontSize: '20px', fontWeight: 'bold' }}>作者部分</span>知识掌握程度
+                                    {(() => {
+                                        if (res.Testscore && res.Testscore[6] < 60) {
+                                            return <b style={{ fontSize: '20px' }}>仍有待提高。</b>;
+                                        } else if (res.Testscore && res.Testscore[6] < 70) {
+                                            return <b style={{ fontSize: '20px' }}>为一般。</b>;
+                                        } else if (res.Testscore && res.Testscore[6] < 80) {
+                                            return <b style={{ fontSize: '20px' }}>为较好。</b>;
+                                        } else if (res.Testscore && res.Testscore[6] < 90) {
+                                            return <b style={{ fontSize: '20px' }}>为良好。</b>;
+                                        } else {
+                                            return <b style={{ fontSize: '20px' }}>为优秀。</b>;
+                                        }
+                                    })()}
+                                    <br />
+                                </div>
+                                <div>
+                                    &emsp;其中，您对各类书籍中<span style={{ fontSize: '20px', fontWeight: 'bold' }}>主旨部分</span>知识掌握程度
+                                    {(() => {
+                                        if (res.Testscore && res.Testscore[7] < 60) {
+                                            return <b style={{ fontSize: '20px' }}>仍有待提高。</b>;
+                                        } else if (res.Testscore && res.Testscore[7] < 70) {
+                                            return <b style={{ fontSize: '20px' }}>为一般。</b>;
+                                        } else if (res.Testscore && res.Testscore[7] < 80) {
+                                            return <b style={{ fontSize: '20px' }}>为较好。</b>;
+                                        } else if (res.Testscore && res.Testscore[7] < 90) {
+                                            return <b style={{ fontSize: '20px' }}>为良好。</b>;
+                                        } else {
+                                            return <b style={{ fontSize: '20px' }}>为优秀。</b>;
+                                        }
+                                    })()}
+                                    <br />
+                                </div>
+                                <div>
+                                    &emsp;其中，您对各类书籍中<span style={{ fontSize: '20px', fontWeight: 'bold' }}>情节部分</span>知识掌握程度
+                                    {(() => {
+                                        if (res.Testscore && res.Testscore[8] < 60) {
+                                            return <b style={{ fontSize: '20px' }}>仍有待提高。</b>;
+                                        } else if (res.Testscore && res.Testscore[8] < 70) {
+                                            return <b style={{ fontSize: '20px' }}>为一般。</b>;
+                                        } else if (res.Testscore && res.Testscore[8] < 80) {
+                                            return <b style={{ fontSize: '20px' }}>为较好。</b>;
+                                        } else if (res.Testscore && res.Testscore[8] < 90) {
+                                            return <b style={{ fontSize: '20px' }}>为良好。</b>;
+                                        } else {
+                                            return <b style={{ fontSize: '20px' }}>为优秀。</b>;
+                                        }
+                                    })()}
+                                    <br />
+                                </div>
+                                <div>
+                                    &emsp;其中，您对各类书籍中<span style={{ fontSize: '20px', fontWeight: 'bold' }}>细节部分</span>知识掌握程度
+                                    {(() => {
+                                        if (res.Testscore && res.Testscore[9] < 60) {
+                                            return <b style={{ fontSize: '20px' }}>仍有待提高。</b>;
+                                        } else if (res.Testscore && res.Testscore[9] < 70) {
+                                            return <b style={{ fontSize: '20px' }}>为一般。</b>;
+                                        } else if (res.Testscore && res.Testscore[9] < 80) {
+                                            return <b style={{ fontSize: '20px' }}>为较好。</b>;
+                                        } else if (res.Testscore && res.Testscore[9] < 90) {
+                                            return <b style={{ fontSize: '20px' }}>为良好。</b>;
+                                        } else {
+                                            return <b style={{ fontSize: '20px' }}>为优秀。</b>;
+                                        }
+                                    })()}
+                                    <br />
+                                </div>
+
+                                <div>
+                                    <br /><br />
+                                    {(() => {
+                                        if (res.avgAccuracy < 60) {
+                                            return <b style={{ fontSize: '20px' }}>如果不读书，行万里路，也只是个邮差——钱钟书</b>;
+                                        } else if (res.avgAccuracy < 70) {
+                                            return <b style={{ fontSize: '20px' }}>只要打开书，就随时打开了一个崭新的世界——《人民日报》</b>;
+                                        } else if (res.avgAccuracy < 80) {
+                                            return <b style={{ fontSize: '20px' }}>无论是驱赶迷茫，还是对抗平庸，读书都是最简单也最实用的方法</b>;
+                                        } else if (res.avgAccuracy < 90) {
+                                            return <b style={{ fontSize: '20px' }}>世界上任何一个书籍都不能给你带来好运，但他们能让你悄悄地成为自己——赫尔曼·黑塞</b>;
+                                        } else {
+                                            return <b style={{ fontSize: '20px' }}>脚步丈量不到的地方，书可以；眼睛到不了的地方，书可以——《人民日报》</b>;
+                                        }
+                                    })()}
+                                    <br />
+                                </div>
+
+                            </div>
+                        </div>
+
+                        {/* <div className="heading_container heading_center">
                             <h2>
                                 您还没有进行过任何测试，请先进行测试，或返回主页
                             </h2>
                         </div> */}
 
-                </div>
+                    </div>)}
             </section>
 
             <section className="info_section layout_padding2">

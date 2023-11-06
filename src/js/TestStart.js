@@ -13,7 +13,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Spin } from 'antd';
 import '../css/style.css';
-import { subscribe, justifyTextStyle } from './utils.js';
+import { subscribe, justifyTextStyle, getUser } from './utils.js';
 import { Card } from "react-bootstrap";
 import { Button } from 'antd'
 
@@ -125,15 +125,15 @@ function TestStart() {
                                 <li className="nav-item">
                                     <a className="nav-link" href="/statistics"> Statistics </a>
                                 </li>
-                                {/* {%if status == 0 or status == 1%}
-              <li className="nav-item active">
-                <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
-              </li>
-              {%elif status == 2%}
-              <li className="nav-item active">
-                <a className="nav-link" href="/profile">Profile <span className="sr-only">(current)</span> </a>
-              </li>
-              {%endif%} */}
+                                {(typeof getUser() === 'object' && Object.keys(getUser()).length === 0) ? (
+                                    <li className="nav-item active">
+                                        <a className="nav-link" href="/login">Login <span className="sr-only">(current)</span> </a>
+                                    </li>
+                                ) : (
+                                    <li className="nav-item active">
+                                        <a className="nav-link" href="/profile">Profile <span className="sr-only">(current)</span> </a>
+                                    </li>
+                                )}
                             </ul>
                         </div>
                     </nav>

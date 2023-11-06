@@ -22,7 +22,7 @@ function Profile() {
         const fetchData = async () => {
             const data = await getUser();
             setUser(data);
-            console.log(data);
+            // console.log(data);
         };
         fetchData();
     }, []);
@@ -32,7 +32,7 @@ function Profile() {
         navigate('/');
 
     }
-    console.log(user);
+    // console.log(user);
     // console.log(getUser());
 
     return (
