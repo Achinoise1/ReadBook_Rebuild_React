@@ -198,13 +198,14 @@ function LoginRegister() {
                                         <Input style={{
                                             height: '50px',
                                             fontSize: "20px",
-                                            textAlign: 'left'
+                                            textAlign: 'left',
                                         }} className="col-8" id="nameReg" placeholder="Name" />
                                         <Select style={{
                                             width: '100%',
                                             height: '50px',
                                             fontSize: "20px",
-                                            textAlign: 'center'
+                                            textAlign: 'center',
+                                            paddingRight: '0'
                                         }} defaultValue="Choice" className="select-after col-4">
                                             <Option value="male">Male</Option>
                                             <Option value="female">Female</Option>
@@ -230,7 +231,7 @@ function LoginRegister() {
                                     <div className='row'>
                                         <Input.TextArea className='inputBox' autoSize={{ minRows: 3, maxRows: 5 }} id="briefReg" placeholder="Brief introduction" />
                                     </div>
-                                    <br /><br />
+                                    <br />
                                     {(err.val === 1) ? (
                                         <h6 style={LeftTextStyle}>Error! Please check again</h6>
                                     ) : ((err.val === 2) ? (
