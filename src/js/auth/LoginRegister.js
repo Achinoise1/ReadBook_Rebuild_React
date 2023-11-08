@@ -12,40 +12,59 @@ import {
 import { faFacebook, faGithub, faQq } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios';
 import { subscribe, justifyTextStyle, LeftTextStyle, saveUser, getUser, goBack } from '../utils.js';
-import { Spin, Button, Image } from 'antd';
+import { Spin, Button, Image, Input, Space, Select } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { runes } from 'runes2';
+
 
 function LoginRegister() {
-    const [id, setId] = useState();
-    const [password, setPassword] = useState();
-    const [reg, setReg] = useState({ val: 0 });
-    const [err, setErr] = useState({ val: 0 });
-    const [loginRes, setLoginRes] = useState();
+    const { Option } = Select;
     const [regRes, setRegRes] = useState();
 
+    // 用户ID相关操作
+    const [id, setId] = useState();
+    const handleIdChange = (event) => {
+        setId(event.target.value);
+    };
+
+    // 用户密码相关操作
+    const [password, setPassword] = useState();
+    const handlePasswordChange = (event) => {
+        setPassword(event.target.value);
+    };
+
+    // 用户重新输入密码相关操作
+    const [passwordAgain, setPasswordAgain] = useState();
+    const handlePasswordAgainChange = (event) => {
+        setPasswordAgain(event.target.value);
+    };
+
+    const [reg, setReg] = useState({ val: 0 });     // 是否为注册页，默认为Login-0
+    const [err, setErr] = useState({ val: 0 });     // 是否出错，默认没出错-0
+
+    // 登录页面跳注册页面
     const toRegister = () => {
         setReg({ val: 1 })
         setErr({ val: 0 })
     }
+
+    // 注册页面跳登录页面
     const toLogin = () => {
         setReg({ val: 0 })
         setErr({ val: 0 })
     }
+
+    //如果注册时两次输入的密码不一致，返回错误2
     const checkRegInfo = (pwd, pwd2) => {
         if (pwd != pwd2) {
             setErr({ val: 2 })
         }
     }
 
-    useEffect(() => {
-        if (loginRes) {
-            saveUser(loginRes.data);
-            //loginRes改变了意味着获取到了数据，因此可以跳转
-            goBack();
-        }
-    }, [loginRes])
+    // 存储登录信息
+    const [loginRes, setLoginRes] = useState();
 
-    const navigate = useNavigate();
+    //与后端通信，判断密码是否与账户匹配
     const checkLoginInfo = (id, pwd) => {
         const formData = new FormData();
         formData.append('id', id);
@@ -59,13 +78,22 @@ function LoginRegister() {
             });
     }
 
-    const handleIdChange = (event) => {
-        setId(event.target.value);
+    //如果成功获取到了数据，存储并跳转回上一个页面
+    //loginRes改变了意味着获取到了数据，因此可以跳转
+    useEffect(() => {
+        if (loginRes) {
+            saveUser(loginRes.data);
+            goBack();
+        }
+    }, [loginRes])
+
+    const [phoneNum, setPhoneNum] = useState("");
+    const characterCount = phoneNum.length;
+
+    const handlePhoneNumChange = (event) => {
+        setPhoneNum(event.target.value);
     };
 
-    const handlePasswordChange = (event) => {
-        setPassword(event.target.value);
-    };
 
     return (
         <div>
@@ -118,18 +146,32 @@ function LoginRegister() {
                                         Please login first ^_^
                                     </h2>
                                 </div>
+                                {/*
+                                    input的原样式
+                                    .contact_section input {
+                                        width: 100%;
+                                        border: 0;
+                                        height: 50px;
+                                        border-radius: 25px;
+                                        margin-bottom: 25px;
+                                        padding-left: 25px;
+                                        outline: none;
+                                        color: #101010;
+                                        background: #f1f1f1;
+                                        }
+                                */}
                                 <div>
-                                    <div id="id" name="id">
-                                        <input id="id" name="id" type="text" placeholder="ID" value={id} onChange={handleIdChange} />
-                                    </div>
-                                    <div id="pw" name="pw">
-                                        <input id="pw" name="pw" type="password" placeholder="Passwords" value={password} onChange={handlePasswordChange} />
-                                    </div>
+                                    <Input className='inputBox' id="id" placeholder="ID" value={id} onChange={handleIdChange} />
+                                    <br />
+                                    <br />
+                                    <Input.Password className='inputBox' id="pw" placeholder="Passwords" value={password} onChange={handlePasswordAgainChange} />
+
                                     {(err.val === 1) ? (
                                         <h6 style={LeftTextStyle}>Error! Please input again</h6>
                                     ) : (
                                         <h6></h6>
                                     )}
+                                    <br />
                                     <div className="btn-box">
                                         <a>
                                             <button onClick={() => checkLoginInfo(id, password)}>
@@ -152,25 +194,43 @@ function LoginRegister() {
                                     </h2>
                                 </div>
                                 <div>
-                                    <div id="nameReg" name="nameReg">
-                                        <input id="nameReg" name="nameReg" type="text" placeholder="Name" />
+                                    <div className='row'>
+                                        <Input style={{
+                                            height: '50px',
+                                            fontSize: "20px",
+                                            textAlign: 'left'
+                                        }} className="col-8" id="nameReg" placeholder="Name" />
+                                        <Select style={{
+                                            width: '100%',
+                                            height: '50px',
+                                            fontSize: "20px",
+                                            textAlign: 'center'
+                                        }} defaultValue="Choice" className="select-after col-4">
+                                            <Option value="male">Male</Option>
+                                            <Option value="female">Female</Option>
+                                            <Option value="none">Secret</Option>
+                                        </Select>
                                     </div>
-                                    <div id="genderReg" name="genderReg">
-                                        <input id="genderReg" name="genderReg" type="text" placeholder="Gender" />
+                                    <br />
+                                    <div className='row'>
+                                        <Input.Password className='inputBox' id="pwReg" placeholder={'Input password'} value={password} onChange={handlePasswordChange} />
                                     </div>
-                                    <div id="pwReg" name="pwReg">
-                                        <input id="pwReg" name="pwReg" type="password" placeholder="Passwords" />
+                                    <br />
+                                    <div className='row'>
+                                        <Input.Password className='inputBox' id="pw2Reg" placeholder={'Input password again'} value={passwordAgain} onChange={handlePasswordAgainChange} />
                                     </div>
-                                    <div id="pw2Reg" name="pw2Reg">
-                                        <input id="pw2Reg" name="pw2Reg" type="password" placeholder="Confirm passwords" />
+                                    <br />
+                                    <div className='row'>
+                                        <Input className='inputBox' maxLength={11} id="teleReg" placeholder="Phone Number" count={{
+                                            show: true,
+                                            max: 10,
+                                        }} />
                                     </div>
-                                    <div id="teleReg" name="teleReg">
-                                        <input id="teleReg" name="teleReg" type="text" placeholder="Phone Number" />
+                                    <br />
+                                    <div className='row'>
+                                        <Input.TextArea className='inputBox' autoSize={{ minRows: 3, maxRows: 5 }} id="briefReg" placeholder="Brief introduction" />
                                     </div>
-                                    <div id="briefReg" name="briefReg">
-                                        <input id="briefReg" name="briefReg" type="text" className="message-box"
-                                            placeholder="Brief introduction" />
-                                    </div>
+                                    <br /><br />
                                     {(err.val === 1) ? (
                                         <h6 style={LeftTextStyle}>Error! Please check again</h6>
                                     ) : ((err.val === 2) ? (
