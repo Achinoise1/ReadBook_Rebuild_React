@@ -1197,3 +1197,8 @@ li {
   color: #ccc;
   font-weight: 400;
 } */
+
+.ant-select-selection-item{
+  font-size: 20px;
+  
+}

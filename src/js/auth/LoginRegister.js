@@ -140,7 +140,7 @@ function LoginRegister() {
                 <div className="container">
                     <div className="row">
                         {(reg.val === 0) ? (
-                            <div className="col-md-6 ">
+                            <div className="col-md-5 ">
                                 <div className="heading_container ">
                                     <h2 className="">
                                         Please login first ^_^
@@ -187,7 +187,7 @@ function LoginRegister() {
                                 </div>
                             </div>
                         ) : (
-                            <div className="col-md-6 ">
+                            <div className="col-md-5 ">
                                 <div className="heading_container ">
                                     <h2 className="">
                                         Please register first ^_^
@@ -203,13 +203,12 @@ function LoginRegister() {
                                         <Select style={{
                                             width: '100%',
                                             height: '50px',
-                                            fontSize: "20px",
                                             textAlign: 'center',
                                             paddingRight: '0'
-                                        }} defaultValue="Choice" className="select-after col-4">
-                                            <Option value="male">Male</Option>
-                                            <Option value="female">Female</Option>
-                                            <Option value="none">Secret</Option>
+                                        }} defaultValue="Choice" className="col-4">
+                                            <Option style={{ fontSize: '20px' }} value="male">Male</Option>
+                                            <Option style={{ fontSize: '20px' }} value="female">Female</Option>
+                                            <Option style={{ fontSize: '20px' }} value="none">Secret</Option>
                                         </Select>
                                     </div>
                                     <br />
@@ -255,7 +254,7 @@ function LoginRegister() {
                                 </div>
                             </div>
                         )}
-                        <div className="col-md-6">
+                        <div className="col-md-6 offset-md-1">
                             <Image src={require(`../../figures/contact-img.png`)} preview={false} alt="" />
                         </div>
                     </div>
