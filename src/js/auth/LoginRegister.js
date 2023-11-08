@@ -4,7 +4,7 @@ import '../../css/responsive.css';
 import '../../css/style.css'
 import '../../css/style.css.map';
 import '../../../node_modules/font-awesome/less/font-awesome.less';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useReducer } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEnvelopeOpen, faPhone, faUniversity
@@ -16,6 +16,26 @@ import { Spin, Button, Image, Input, Space, Select } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { runes } from 'runes2';
 
+const initialState = {
+    inputCounts: {},
+};
+
+const reducer = (state, action) => {
+    switch (action.type) {
+        case 'updateInputCount': {
+            const { id, count } = action.payload;
+            return {
+                ...state,
+                inputCounts: {
+                    ...state.inputCounts,
+                    [id]: count,
+                },
+            };
+        }
+        default:
+            return state;
+    }
+};
 
 function LoginRegister() {
     const { Option } = Select;
@@ -66,6 +86,7 @@ function LoginRegister() {
 
     //与后端通信，判断密码是否与账户匹配
     const checkLoginInfo = (id, pwd) => {
+        console.log(id, pwd)
         const formData = new FormData();
         formData.append('id', id);
         formData.append('pwd', pwd)
@@ -77,7 +98,6 @@ function LoginRegister() {
                 console.log(error);
             });
     }
-
     //如果成功获取到了数据，存储并跳转回上一个页面
     //loginRes改变了意味着获取到了数据，因此可以跳转
     useEffect(() => {
@@ -94,6 +114,11 @@ function LoginRegister() {
         setPhoneNum(event.target.value);
     };
 
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const handleInputChange = (e) => {
+        const { id, value } = e.target;
+        dispatch({ type: 'updateInputCount', payload: { id, count: value.length } });
+    };
 
     return (
         <div>
@@ -161,11 +186,10 @@ function LoginRegister() {
                                         }
                                 */}
                                 <div>
-                                    <Input className='inputBox' id="id" placeholder="ID" value={id} onChange={handleIdChange} />
+                                    <Input className='inputBox' id="loginId" placeholder="ID" value={id} onChange={handleIdChange} />
                                     <br />
                                     <br />
-                                    <Input.Password className='inputBox' id="pw" placeholder="Passwords" value={password} onChange={handlePasswordAgainChange} />
-
+                                    <Input.Password className='inputBox' id="loginPwd" placeholder="Passwords" value={password} onChange={handlePasswordChange} />
                                     {(err.val === 1) ? (
                                         <h6 style={LeftTextStyle}>Error! Please input again</h6>
                                     ) : (
@@ -195,40 +219,46 @@ function LoginRegister() {
                                 </div>
                                 <div>
                                     <div className='row'>
-                                        <Input style={{
-                                            height: '50px',
-                                            fontSize: "20px",
-                                            textAlign: 'left',
-                                        }} className="col-8" id="nameReg" placeholder="Name" />
-                                        <Select style={{
-                                            width: '100%',
-                                            height: '50px',
-                                            textAlign: 'center',
-                                            paddingRight: '0'
-                                        }} defaultValue="Choice" className="col-4">
-                                            <Option style={{ fontSize: '20px' }} value="male">Male</Option>
-                                            <Option style={{ fontSize: '20px' }} value="female">Female</Option>
-                                            <Option style={{ fontSize: '20px' }} value="none">Secret</Option>
+                                        <Input
+                                            style={{ height: '50px', fontSize: "20px", textAlign: 'left' }}
+                                            maxLength={10}
+                                            suffix={<span style={{ color: '#8c8c8c' }}>{state.inputCounts['regName'] || 0}/10</span>}
+                                            onChange={handleInputChange}
+                                            className="col-8" id="regName" placeholder="Name" />
+                                        <Select style={{ width: '100%', height: '50px', textAlign: 'center', paddingRight: '0' }} defaultValue="Choice" className="col-4">
+                                            <Option style={{ fontSize: '20px' }} value="Male">Male</Option>
+                                            <Option style={{ fontSize: '20px' }} value="Female">Female</Option>
+                                            <Option style={{ fontSize: '20px' }} value="None">Secret</Option>
                                         </Select>
                                     </div>
                                     <br />
                                     <div className='row'>
-                                        <Input.Password className='inputBox' id="pwReg" placeholder={'Input password'} value={password} onChange={handlePasswordChange} />
+                                        <Input.Password className='inputBox' id="regPwd" placeholder={'Input password'} value={password} onChange={handlePasswordChange} />
                                     </div>
                                     <br />
                                     <div className='row'>
-                                        <Input.Password className='inputBox' id="pw2Reg" placeholder={'Input password again'} value={passwordAgain} onChange={handlePasswordAgainChange} />
+                                        <Input.Password className='inputBox' id="regPwd2" placeholder={'Input password again'} value={passwordAgain} onChange={handlePasswordAgainChange} />
                                     </div>
                                     <br />
                                     <div className='row'>
-                                        <Input className='inputBox' maxLength={11} id="teleReg" placeholder="Phone Number" count={{
-                                            show: true,
-                                            max: 10,
-                                        }} />
+                                        <Input
+                                            className='inputBox'
+                                            maxLength={11}
+                                            suffix={<span style={{ color: '#8c8c8c' }}>{state.inputCounts['regTele'] || 0}/11</span>}
+                                            onChange={handleInputChange}
+                                            id="regTele"
+                                            placeholder="Phone Number" />
                                     </div>
                                     <br />
                                     <div className='row'>
-                                        <Input.TextArea className='inputBox' autoSize={{ minRows: 3, maxRows: 5 }} id="briefReg" placeholder="Brief introduction" />
+                                        <Input.TextArea
+                                            className='inputBox'
+                                            autoSize={{ minRows: 3, maxRows: 5 }}
+                                            maxLength={200}
+                                            showCount
+                                            onChange={handleInputChange}
+                                            id="regBrief"
+                                            placeholder="Brief introduction" />
                                     </div>
                                     <br />
                                     {(err.val === 1) ? (
