@@ -13,7 +13,7 @@ import { faFacebook, faGithub, faQq } from '@fortawesome/fontawesome-free-brands
 import axios from 'axios';
 import { subscribe, justifyTextStyle, LeftTextStyle, saveUser, ERROR, goBack } from '../utils.js';
 import { Spin, Button, Image, Input, Space, Select } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 const initialState = {
     inputCounts: {},
@@ -171,7 +171,7 @@ function LoginRegister() {
             axios.post('/api/registration', formData)
                 .then(response => {
                     console.log(response)
-                    // setLoginRes(response.data);
+                    setRegRes(response.data);
                 })
                 .catch(error => {
                     console.log(error);
@@ -183,9 +183,9 @@ function LoginRegister() {
     //loginRes改变了意味着获取到了数据，因此可以跳转
     useEffect(() => {
         if (regRes) {
-            saveUser(regRes.data);
-            alert('注册成功！请登录！')
-            // goBack();
+            const userId = regRes.data.userId
+            alert(`注册成功！您的账号是${userId}，请登录！`)
+            window.location.href = "/login";
         }
     }, [regRes])
 
@@ -196,9 +196,9 @@ function LoginRegister() {
         } else {
             const { id, value } = e.target;
             if (id.includes('login')) {
-                dispatch({ type: 'updateInputContent', payload: { id, content: value } })
+                dispatch({ type: 'updateInputLoginContent', payload: { id, content: value } })
             } else {
-                dispatch({ type: 'updateInputContent', payload: { id, content: value } })
+                dispatch({ type: 'updateInputRegisterContent', payload: { id, content: value } })
             }
             dispatch({ type: 'updateInputCount', payload: { id, count: value.length } });
         }
@@ -315,9 +315,9 @@ function LoginRegister() {
                                             className="col-4"
                                             id="regGender"
                                             onChange={(value) => handleInputChange(value, 'gender')}>
-                                            <Option style={{ fontSize: '20px' }} value="Male">Male</Option>
-                                            <Option style={{ fontSize: '20px' }} value="Female">Female</Option>
-                                            <Option style={{ fontSize: '20px' }} value="None">Secret</Option>
+                                            <Option style={{ fontSize: '20px' }} value="M">Male</Option>
+                                            <Option style={{ fontSize: '20px' }} value="F">Female</Option>
+                                            <Option style={{ fontSize: '20px' }} value="N">Secret</Option>
                                         </Select>
                                     </div>
                                     <br />
