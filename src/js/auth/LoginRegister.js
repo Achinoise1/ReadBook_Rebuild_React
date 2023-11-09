@@ -11,13 +11,15 @@ import {
 } from '@fortawesome/fontawesome-free-solid'
 import { faFacebook, faGithub, faQq } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios';
-import { subscribe, justifyTextStyle, LeftTextStyle, saveUser, getUser, goBack } from '../utils.js';
+import { subscribe, justifyTextStyle, LeftTextStyle, saveUser, ERROR, goBack } from '../utils.js';
 import { Spin, Button, Image, Input, Space, Select } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { runes } from 'runes2';
 
 const initialState = {
     inputCounts: {},
+    inputLoginContent: {},
+    inputRegisterContent: {},
+    selectContent: {}
 };
 
 const reducer = (state, action) => {
@@ -32,35 +34,63 @@ const reducer = (state, action) => {
                 },
             };
         }
+        case 'updateInputLoginContent': {
+            const { id, content } = action.payload;
+            return {
+                ...state,
+                inputLoginContent: {
+                    ...state.inputLoginContent,
+                    [id]: content,
+                },
+            };
+        }
+        case 'updateInputRegisterContent': {
+            const { id, content } = action.payload;
+            return {
+                ...state,
+                inputRegisterContent: {
+                    ...state.inputRegisterContent,
+                    [id]: content,
+                },
+            };
+        }
+        case 'updateSelectContent': {
+            const { name, content } = action.payload;
+            // console.log(action)
+            return {
+                ...state,
+                selectContent: {
+                    ...state.selectContent,
+                    [name]: content,
+                },
+            };
+        }
         default:
             return state;
     }
 };
 
+// 错误码
+/*
+1xxx    登录
+2xxx    注册
+
+1001    账号不存在
+1002    密码错误
+1003    账号有误
+
+2001    信息缺项
+2002    密码不一致
+2003    该用户已存在
+2004    手机号无效    
+
+*/
+
 function LoginRegister() {
     const { Option } = Select;
-    const [regRes, setRegRes] = useState();
-
-    // 用户ID相关操作
-    const [id, setId] = useState();
-    const handleIdChange = (event) => {
-        setId(event.target.value);
-    };
-
-    // 用户密码相关操作
-    const [password, setPassword] = useState();
-    const handlePasswordChange = (event) => {
-        setPassword(event.target.value);
-    };
-
-    // 用户重新输入密码相关操作
-    const [passwordAgain, setPasswordAgain] = useState();
-    const handlePasswordAgainChange = (event) => {
-        setPasswordAgain(event.target.value);
-    };
 
     const [reg, setReg] = useState({ val: 0 });     // 是否为注册页，默认为Login-0
-    const [err, setErr] = useState({ val: 0 });     // 是否出错，默认没出错-0
+    const [err, setErr] = useState({ val: 0 });
 
     // 登录页面跳注册页面
     const toRegister = () => {
@@ -74,52 +104,107 @@ function LoginRegister() {
         setErr({ val: 0 })
     }
 
-    //如果注册时两次输入的密码不一致，返回错误2
-    const checkRegInfo = (pwd, pwd2) => {
-        if (pwd != pwd2) {
-            setErr({ val: 2 })
-        }
-    }
-
     // 存储登录信息
     const [loginRes, setLoginRes] = useState();
 
     //与后端通信，判断密码是否与账户匹配
-    const checkLoginInfo = (id, pwd) => {
-        console.log(id, pwd)
+    const checkLoginInfo = () => {
+        const id = state.inputLoginContent['loginId']
+        const pwd = state.inputLoginContent['loginPwd']
         const formData = new FormData();
         formData.append('id', id);
         formData.append('pwd', pwd)
         axios.post('/api/validation', formData)
             .then(response => {
-                setLoginRes(response.data);
+                console.log(response)
+                switch (response.data.code) {
+                    case 200:
+                        setLoginRes(response.data);
+                        break;
+                    case 404:
+                        setErr({ val: 1001 });
+                        break;
+                    case 400:
+                        setErr({ val: 1003 });
+                        break;
+                    case 403:
+                        setErr({ val: 1002 });
+                        break;
+                }
             })
             .catch(error => {
                 console.log(error);
             });
     }
+
     //如果成功获取到了数据，存储并跳转回上一个页面
     //loginRes改变了意味着获取到了数据，因此可以跳转
     useEffect(() => {
+        console.log(loginRes)
         if (loginRes) {
             saveUser(loginRes.data);
             goBack();
         }
     }, [loginRes])
 
-    const [phoneNum, setPhoneNum] = useState("");
-    const characterCount = phoneNum.length;
 
-    const handlePhoneNumChange = (event) => {
-        setPhoneNum(event.target.value);
-    };
+    // 存储注册信息
+    const [regRes, setRegRes] = useState();
+
+    //与后端通信，判断密码是否与账户匹配
+    //todo: 改进
+    const checkRegisterInfo = () => {
+        setErr({ val: 0 })
+        if (!state.inputRegisterContent) {
+            setErr({ val: 2001 })
+        }
+        else if (state.inputRegisterContent['regPwd'] != state.inputRegisterContent['regPwd2']) {
+            setErr({ val: 2002 })
+        } else {
+            const formData = new FormData();
+            formData.append('username', state.inputRegisterContent['regName']);
+            formData.append('pwd', state.inputRegisterContent['regPwd']);
+            formData.append('gender', state.selectContent['gender']);
+            formData.append('phone', state.inputRegisterContent['regTele']);
+            formData.append('brief', state.inputRegisterContent['regBrief']);
+
+            axios.post('/api/registration', formData)
+                .then(response => {
+                    console.log(response)
+                    // setLoginRes(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        }
+
+    }
+    //如果成功获取到了数据，存储并跳转回上一个页面
+    //loginRes改变了意味着获取到了数据，因此可以跳转
+    useEffect(() => {
+        if (regRes) {
+            saveUser(regRes.data);
+            alert('注册成功！请登录！')
+            // goBack();
+        }
+    }, [regRes])
 
     const [state, dispatch] = useReducer(reducer, initialState);
-    const handleInputChange = (e) => {
-        const { id, value } = e.target;
-        dispatch({ type: 'updateInputCount', payload: { id, count: value.length } });
+    const handleInputChange = (e, name = '') => {
+        if (typeof (e) === typeof ('1')) {
+            dispatch({ type: 'updateSelectContent', payload: { name, content: e } })
+        } else {
+            const { id, value } = e.target;
+            if (id.includes('login')) {
+                dispatch({ type: 'updateInputContent', payload: { id, content: value } })
+            } else {
+                dispatch({ type: 'updateInputContent', payload: { id, content: value } })
+            }
+            dispatch({ type: 'updateInputCount', payload: { id, count: value.length } });
+        }
     };
 
+    // console.log(state)
     return (
         <div>
             <div>
@@ -186,19 +271,16 @@ function LoginRegister() {
                                         }
                                 */}
                                 <div>
-                                    <Input className='inputBox' id="loginId" placeholder="ID" value={id} onChange={handleIdChange} />
+                                    <Input className='inputBox' id="loginId" placeholder="ID" onChange={handleInputChange} />
                                     <br />
                                     <br />
-                                    <Input.Password className='inputBox' id="loginPwd" placeholder="Passwords" value={password} onChange={handlePasswordChange} />
-                                    {(err.val === 1) ? (
-                                        <h6 style={LeftTextStyle}>Error! Please input again</h6>
-                                    ) : (
-                                        <h6></h6>
-                                    )}
+                                    <Input.Password className='inputBox' id="loginPwd" placeholder="Passwords" onChange={handleInputChange} />
                                     <br />
+                                    <br />
+                                    <h6 style={LeftTextStyle}>{ERROR[err.val]}</h6>
                                     <div className="btn-box">
                                         <a>
-                                            <button onClick={() => checkLoginInfo(id, password)}>
+                                            <button onClick={() => checkLoginInfo()}>
                                                 SEND
                                             </button>
                                         </a>
@@ -220,12 +302,19 @@ function LoginRegister() {
                                 <div>
                                     <div className='row'>
                                         <Input
+                                            required
                                             style={{ height: '50px', fontSize: "20px", textAlign: 'left' }}
                                             maxLength={10}
                                             suffix={<span style={{ color: '#8c8c8c' }}>{state.inputCounts['regName'] || 0}/10</span>}
                                             onChange={handleInputChange}
                                             className="col-8" id="regName" placeholder="Name" />
-                                        <Select style={{ width: '100%', height: '50px', textAlign: 'center', paddingRight: '0' }} defaultValue="Choice" className="col-4">
+                                        <Select
+                                            required
+                                            style={{ width: '100%', height: '50px', textAlign: 'center', paddingRight: '0' }}
+                                            defaultValue=""
+                                            className="col-4"
+                                            id="regGender"
+                                            onChange={(value) => handleInputChange(value, 'gender')}>
                                             <Option style={{ fontSize: '20px' }} value="Male">Male</Option>
                                             <Option style={{ fontSize: '20px' }} value="Female">Female</Option>
                                             <Option style={{ fontSize: '20px' }} value="None">Secret</Option>
@@ -233,11 +322,11 @@ function LoginRegister() {
                                     </div>
                                     <br />
                                     <div className='row'>
-                                        <Input.Password className='inputBox' id="regPwd" placeholder={'Input password'} value={password} onChange={handlePasswordChange} />
+                                        <Input.Password className='inputBox' id="regPwd" placeholder={'Input password'} onChange={handleInputChange} />
                                     </div>
                                     <br />
                                     <div className='row'>
-                                        <Input.Password className='inputBox' id="regPwd2" placeholder={'Input password again'} value={passwordAgain} onChange={handlePasswordAgainChange} />
+                                        <Input.Password className='inputBox' id="regPwd2" placeholder={'Input password again'} onChange={handleInputChange} />
                                     </div>
                                     <br />
                                     <div className='row'>
@@ -261,17 +350,10 @@ function LoginRegister() {
                                             placeholder="Brief introduction" />
                                     </div>
                                     <br />
-                                    {(err.val === 1) ? (
-                                        <h6 style={LeftTextStyle}>Error! Please check again</h6>
-                                    ) : ((err.val === 2) ? (
-                                        <h6 style={LeftTextStyle}>Entered passwords are not the same! Please input again</h6>
-                                    ) : (
-                                        <h6></h6>
-                                    )
-                                    )}
+                                    <h6 style={LeftTextStyle}>{ERROR[err.val]}</h6>
                                     <div className="btn-box">
                                         <a>
-                                            <button onClick={() => checkRegInfo(1, 2)}>
+                                            <button onClick={() => checkRegisterInfo()}>
                                                 SEND
                                             </button>
                                         </a>
