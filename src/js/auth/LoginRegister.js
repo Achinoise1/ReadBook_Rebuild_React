@@ -92,7 +92,7 @@ function LoginRegister() {
 
     //与后端通信，判断密码是否与账户匹配
     const checkLoginInfo = (values) => {
-        const id = regRes.data.userId
+        const id = values['logId']
         const pwd = values['logPwd']
         const formData = new FormData();
         formData.append('id', id);
@@ -165,7 +165,7 @@ function LoginRegister() {
         if (regRes) {
             const userId = regRes.data.userId
             alert(`注册成功！您的账号是${userId}！`)
-            const logVal = { 'logPwd': userPwd }
+            const logVal = { 'logId': userId, 'logPwd': userPwd }
             checkLoginInfo(logVal);
         }
     }, [regRes])
