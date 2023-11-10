@@ -17,8 +17,7 @@ import { AsteriskOutlined } from '@ant-design/icons';
 
 const initialState = {
     inputCounts: {},
-    inputLoginContent: {},
-    selectContent: {}
+    // inputLoginContent: {}
 };
 
 const reducer = (state, action) => {
@@ -40,27 +39,16 @@ const reducer = (state, action) => {
                 },
             };
         }
-        case 'updateInputLoginContent': {
-            const { id, content } = action.payload;
-            return {
-                ...state,
-                inputLoginContent: {
-                    ...state.inputLoginContent,
-                    [id]: content,
-                },
-            };
-        }
-        case 'updateSelectContent': {
-            const { name, content } = action.payload;
-            // console.log(action)
-            return {
-                ...state,
-                selectContent: {
-                    ...state.selectContent,
-                    [name]: content,
-                },
-            };
-        }
+        // case 'updateInputLoginContent': {
+        //     const { id, content } = action.payload;
+        //     return {
+        //         ...state,
+        //         inputLoginContent: {
+        //             ...state.inputLoginContent,
+        //             [id]: content,
+        //         },
+        //     };
+        // }
         default:
             return state;
     }
@@ -104,7 +92,7 @@ function LoginRegister() {
 
     //与后端通信，判断密码是否与账户匹配
     const checkLoginInfo = (values) => {
-        const id = values['logName']
+        const id = regRes.data.userId
         const pwd = values['logPwd']
         const formData = new FormData();
         formData.append('id', id);
@@ -118,12 +106,15 @@ function LoginRegister() {
                         break;
                     case 404:
                         setErr({ val: 1001 });
+                        isFirstSubmitLog.current = true;
                         break;
                     case 400:
                         setErr({ val: 1003 });
+                        isFirstSubmitLog.current = true;
                         break;
                     case 403:
                         setErr({ val: 1002 });
+                        isFirstSubmitLog.current = true;
                         break;
                 }
             })
@@ -145,6 +136,7 @@ function LoginRegister() {
 
     // 存储注册信息
     const [regRes, setRegRes] = useState();
+    const [userPwd, setUserPwd] = useState();   // 存储密码，用于注册后自动登录
 
     //与后端通信，判断密码是否与账户匹配
     //todo: 改进
@@ -159,8 +151,8 @@ function LoginRegister() {
         }
         axios.post('/api/registration', formData)
             .then(response => {
-                // console.log(response)
                 setRegRes(response.data);
+                setUserPwd(values['regPwd'])
             })
             .catch(error => {
                 console.log(error);
@@ -172,20 +164,16 @@ function LoginRegister() {
     useEffect(() => {
         if (regRes) {
             const userId = regRes.data.userId
-            alert(`注册成功！您的账号是${userId}，请登录！`)
-            window.location.href = "/login";
+            alert(`注册成功！您的账号是${userId}！`)
+            const logVal = { 'logPwd': userPwd }
+            checkLoginInfo(logVal);
         }
     }, [regRes])
 
     const [state, dispatch] = useReducer(reducer, initialState);
-    const handleInputChange = (e, name = '') => {
-        if (typeof (e) === typeof ('1')) {
-            dispatch({ type: 'updateSelectContent', payload: { name, content: e } })
-        } else {
+    const handleInputChange = (e) => {
+        if (typeof (e) != typeof ('1')) {
             const { id, value } = e.target;
-            if (id.includes('login')) {
-                dispatch({ type: 'updateInputLoginContent', payload: { id, content: value } })
-            }
             dispatch({ type: 'updateInputCount', payload: { id, count: value.length } });
         }
     };
@@ -202,8 +190,6 @@ function LoginRegister() {
     const submitFormReg = () => {
         formRefReg.current.validateFields().then(values => {
             if (isFirstSubmitReg.current) {
-                // console.log(isFirstSubmit); // 通过验证的表单数据
-                // console.log(values)
                 checkRegisterInfo(values);
                 isFirstSubmitReg.current = false;
             }
@@ -217,8 +203,6 @@ function LoginRegister() {
     const submitFormLog = () => {
         formRefLog.current.validateFields().then(values => {
             if (isFirstSubmitLog.current) {
-                // console.log(isFirstSubmit); // 通过验证的表单数据
-                // console.log(values)
                 checkLoginInfo(values);
                 isFirstSubmitLog.current = false;
             }
@@ -292,27 +276,6 @@ function LoginRegister() {
                                         background: #f1f1f1;
                                         }
                                 */}
-                                {/* <div>
-                                    <Input className='inputBox' id="loginId" placeholder="ID" onChange={handleInputChange} />
-                                    <br />
-                                    <br />
-                                    <Input.Password className='inputBox' id="loginPwd" placeholder="Passwords" onChange={handleInputChange} />
-                                    <br />
-                                    <br />
-                                    <h6 style={LeftTextStyle}>{ERROR[err.val]}</h6>
-                                    <div className="btn-box">
-                                        <a>
-                                            <button onClick={() => checkLoginInfo()}>
-                                                SEND
-                                            </button>
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <br />
-                                        <br />
-                                        <h6 style={LeftTextStyle}>No account? Sign up <a className="linklike" onClick={toRegister}>here</a> ^_^</h6>
-                                    </div>
-                                </div> */}
                                 <Form
                                     ref={formRefLog}
                                     form={form}
@@ -324,18 +287,18 @@ function LoginRegister() {
                                     style={{ maxWidth: 600 }}
                                 >
                                     <Form.Item
-                                        name='logName'
+                                        name='logId'
                                         rules={[
                                             {
                                                 required: true,
-                                                message: '请输入用户名',
+                                                message: '请输入用户账号',
                                             }
                                         ]}>
                                         <Input
                                             allowClear
                                             maxLength={10}
                                             onChange={handleInputChange}
-                                            id="logName"
+                                            id="logId"
                                             placeholder='Username' />
                                     </Form.Item>
 
@@ -355,7 +318,7 @@ function LoginRegister() {
                                             allowClear
                                             placeholder='Password' />
                                     </Form.Item>
-
+                                    <h6 style={LeftTextStyle}>{ERROR[err.val]}</h6>
                                     <div className="btn-box" style={ItemCenter}>
                                         <a>
                                             <button style={{ fontWeight: 'bold' }} htmlType="submit" onClick={() => submitFormLog()}>
@@ -499,71 +462,6 @@ function LoginRegister() {
                                     <br />
                                     <h6 style={LeftTextStyle}>Already have an account? Login <a className="linklike" onClick={toLogin}>here</a>^_^</h6>
                                 </div>
-                                {/* <div>
-                                    <div className='row'>
-                                        <Input
-                                            required
-                                            style={{ height: '50px', fontSize: "20px", textAlign: 'left' }}
-                                            maxLength={10}
-                                            suffix={<span style={{ color: '#8c8c8c' }}>{state.inputCounts['regName'] || 0}/10</span>}
-                                            onChange={handleInputChange}
-                                            className="col-8" id="regName" placeholder="Name" />
-                                        <Select
-                                            required
-                                            style={{ width: '100%', height: '50px', textAlign: 'center', paddingRight: '0' }}
-                                            defaultValue=""
-                                            className="col-4"
-                                            id="regGender"
-                                            onChange={(value) => handleInputChange(value, 'gender')}>
-                                            <Option style={{ fontSize: '20px' }} value="M">Male</Option>
-                                            <Option style={{ fontSize: '20px' }} value="F">Female</Option>
-                                            <Option style={{ fontSize: '20px' }} value="N">Secret</Option>
-                                        </Select>
-                                    </div>
-                                    <br />
-                                    <div className='row'>
-                                        <Input.Password className='inputBox' id="regPwd" placeholder={'Input password'} onChange={handleInputChange} />
-                                    </div>
-                                    <br />
-                                    <div className='row'>
-                                        <Input.Password className='inputBox' id="regPwd2" placeholder={'Input password again'} onChange={handleInputChange} />
-                                    </div>
-                                    <br />
-                                    <div className='row'>
-                                        <Input
-                                            className='inputBox'
-                                            maxLength={11}
-                                            suffix={<span style={{ color: '#8c8c8c' }}>{state.inputCounts['regTele'] || 0}/11</span>}
-                                            onChange={handleInputChange}
-                                            id="regTele"
-                                            placeholder="Phone Number" />
-                                    </div>
-                                    <br />
-                                    <div className='row'>
-                                        <Input.TextArea
-                                            className='inputBox'
-                                            autoSize={{ minRows: 3, maxRows: 5 }}
-                                            maxLength={200}
-                                            showCount
-                                            onChange={handleInputChange}
-                                            id="regBrief"
-                                            placeholder="Brief introduction" />
-                                    </div>
-                                    <br />
-                                    <h6 style={LeftTextStyle}>{ERROR[err.val]}</h6>
-                                    <div className="btn-box">
-                                        <a>
-                                            <button onClick={() => checkRegisterInfo()}>
-                                                SEND
-                                            </button>
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <br />
-                                        <br />
-                                        <h6 style={LeftTextStyle}>Already have an account? Login <a className="linklike" onClick={toLogin}>here</a>^_^</h6>
-                                    </div>
-                                </div> */}
                             </div>
                         )}
                         <div className="col-md-6 offset-md-1">
