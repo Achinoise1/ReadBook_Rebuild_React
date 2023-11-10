@@ -83,7 +83,6 @@ const reducer = (state, action) => {
 */
 
 function LoginRegister() {
-    const [form] = Form.useForm();
 
     const [reg, setReg] = useState({ val: 0 });     // 是否为注册页，默认为Login-0
     const [err, setErr] = useState({ val: 0 });
@@ -104,9 +103,9 @@ function LoginRegister() {
     const [loginRes, setLoginRes] = useState();
 
     //与后端通信，判断密码是否与账户匹配
-    const checkLoginInfo = () => {
-        const id = state.inputLoginContent['loginId']
-        const pwd = state.inputLoginContent['loginPwd']
+    const checkLoginInfo = (values) => {
+        const id = values['logName']
+        const pwd = values['logPwd']
         const formData = new FormData();
         formData.append('id', id);
         formData.append('pwd', pwd)
@@ -191,22 +190,39 @@ function LoginRegister() {
         }
     };
 
+    const [form] = Form.useForm();
     const handleInputReset = () => {
         form.resetFields();
         dispatch({ type: 'clearInputCount' });
     }
 
-    const formRef = useRef(null);
-    const isFirstSubmit = useRef(true);
-    const submitForm = () => {
-        formRef.current.validateFields().then(values => {
-            if (isFirstSubmit.current) {
+    //注册验证
+    const formRefReg = useRef(null);
+    const isFirstSubmitReg = useRef(true);
+    const submitFormReg = () => {
+        formRefReg.current.validateFields().then(values => {
+            if (isFirstSubmitReg.current) {
                 // console.log(isFirstSubmit); // 通过验证的表单数据
                 // console.log(values)
                 checkRegisterInfo(values);
-                isFirstSubmit.current = false;
+                isFirstSubmitReg.current = false;
             }
-            console.log(isFirstSubmit.current); // 通过验证的表单数据
+            console.log(isFirstSubmitReg.current); // 通过验证的表单数据
+        });
+    }
+
+    //登录验证
+    const formRefLog = useRef(null);
+    const isFirstSubmitLog = useRef(true);
+    const submitFormLog = () => {
+        formRefLog.current.validateFields().then(values => {
+            if (isFirstSubmitLog.current) {
+                // console.log(isFirstSubmit); // 通过验证的表单数据
+                // console.log(values)
+                checkLoginInfo(values);
+                isFirstSubmitLog.current = false;
+            }
+            console.log(isFirstSubmitLog.current); // 通过验证的表单数据
         });
     }
 
@@ -276,7 +292,7 @@ function LoginRegister() {
                                         background: #f1f1f1;
                                         }
                                 */}
-                                <div>
+                                {/* <div>
                                     <Input className='inputBox' id="loginId" placeholder="ID" onChange={handleInputChange} />
                                     <br />
                                     <br />
@@ -296,6 +312,68 @@ function LoginRegister() {
                                         <br />
                                         <h6 style={LeftTextStyle}>No account? Sign up <a className="linklike" onClick={toRegister}>here</a> ^_^</h6>
                                     </div>
+                                </div> */}
+                                <Form
+                                    ref={formRefLog}
+                                    form={form}
+                                    labelCol={{ span: 6 }}
+                                    wrapperCol={{ span: 24 }}
+                                    layout="horizontal"
+                                    size='large'
+
+                                    style={{ maxWidth: 600 }}
+                                >
+                                    <Form.Item
+                                        name='logName'
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: '请输入用户名',
+                                            }
+                                        ]}>
+                                        <Input
+                                            allowClear
+                                            maxLength={10}
+                                            onChange={handleInputChange}
+                                            id="logName"
+                                            placeholder='Username' />
+                                    </Form.Item>
+
+                                    <Form.Item
+                                        name='logPwd'
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: '请输入密码',
+                                            }, {
+                                                pattern: /^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9]{6,18}$/,
+                                                message: '密码长度为6-18位，必须由字母、数字组成',
+                                            }
+                                        ]}>
+                                        <Input.Password
+                                            maxLength={18}
+                                            allowClear
+                                            placeholder='Password' />
+                                    </Form.Item>
+
+                                    <div className="btn-box" style={ItemCenter}>
+                                        <a>
+                                            <button style={{ fontWeight: 'bold' }} htmlType="submit" onClick={() => submitFormLog()}>
+                                                SEND
+                                            </button>
+                                        </a>
+                                        &emsp;
+                                        <a>
+                                            <button style={{ fontWeight: 'bold' }} onClick={() => handleInputReset()}>
+                                                RESET
+                                            </button>
+                                        </a>
+                                    </div>
+                                </Form >
+                                <div>
+                                    <br />
+                                    <br />
+                                    <h6 style={LeftTextStyle}>No account? Sign up <a className="linklike" onClick={toRegister}>here</a> ^_^</h6>
                                 </div>
                             </div>
                         ) : (
@@ -306,7 +384,7 @@ function LoginRegister() {
                                     </h2>
                                 </div>
                                 <Form
-                                    ref={formRef}
+                                    ref={formRefReg}
                                     form={form}
                                     labelCol={{ span: 6 }}
                                     wrapperCol={{ span: 24 }}
@@ -404,7 +482,7 @@ function LoginRegister() {
                                     </Form.Item>
                                     <div className="btn-box" style={ItemCenter}>
                                         <a>
-                                            <button style={{ fontWeight: 'bold' }} htmlType="submit" onClick={() => submitForm()}>
+                                            <button style={{ fontWeight: 'bold' }} htmlType="submit" onClick={() => submitFormReg()}>
                                                 SEND
                                             </button>
                                         </a>
