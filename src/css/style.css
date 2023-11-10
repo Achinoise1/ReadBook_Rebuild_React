@@ -1199,25 +1199,15 @@ li {
 } */
 
 .ant-select-selection-item{
-  font-size: 20px;
-  
+  font-size: 18px;
 }
 
-/* .ant-form-item .ant-form-item-label > label {
-  font-size: 20px;
-  display: flex;
-  justify-content: flex-end; 
-} */
-
-.labelWrapper {
-  position: relative; /* 相对定位 */
+.ant-form .ant-form-item-label label{
+  font-size: 16px;
 }
 
-.labelContainer {
-  position: absolute; /* 绝对定位 */
-}
-
-.labelContent {
-  position: relative; /* 相对定位 */
-  align-items: center; /* 垂直居中 */
+.required-field label::before {
+  content: '*';
+  color: red;
+  margin-right: 4px;
 }

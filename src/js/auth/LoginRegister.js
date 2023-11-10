@@ -4,26 +4,32 @@ import '../../css/responsive.css';
 import '../../css/style.css'
 import '../../css/style.css.map';
 import '../../../node_modules/font-awesome/less/font-awesome.less';
-import React, { useEffect, useState, useReducer } from 'react'
+import React, { useEffect, useState, useReducer, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEnvelopeOpen, faPhone, faUniversity
 } from '@fortawesome/fontawesome-free-solid'
 import { faFacebook, faGithub, faQq } from '@fortawesome/fontawesome-free-brands'
 import axios from 'axios';
-import { subscribe, justifyTextStyle, LeftTextStyle, saveUser, ERROR, goBack } from '../utils.js';
-import { Spin, Button, Image, Input, Space, Select } from 'antd';
-import { Redirect } from 'react-router-dom';
+import { subscribe, justifyTextStyle, LeftTextStyle, saveUser, ERROR, goBack, ItemCenter } from '../utils.js';
+import { Form, Button, Image, Input, Space, Select } from 'antd';
+import { AsteriskOutlined } from '@ant-design/icons';
 
 const initialState = {
     inputCounts: {},
     inputLoginContent: {},
-    inputRegisterContent: {},
     selectContent: {}
 };
 
 const reducer = (state, action) => {
     switch (action.type) {
+        case 'clearInputCount': {
+            return {
+                ...state,
+                inputCounts: {
+                },
+            };
+        }
         case 'updateInputCount': {
             const { id, count } = action.payload;
             return {
@@ -40,16 +46,6 @@ const reducer = (state, action) => {
                 ...state,
                 inputLoginContent: {
                     ...state.inputLoginContent,
-                    [id]: content,
-                },
-            };
-        }
-        case 'updateInputRegisterContent': {
-            const { id, content } = action.payload;
-            return {
-                ...state,
-                inputRegisterContent: {
-                    ...state.inputRegisterContent,
                     [id]: content,
                 },
             };
@@ -87,7 +83,7 @@ const reducer = (state, action) => {
 */
 
 function LoginRegister() {
-    const { Option } = Select;
+    const [form] = Form.useForm();
 
     const [reg, setReg] = useState({ val: 0 });     // 是否为注册页，默认为Login-0
     const [err, setErr] = useState({ val: 0 });
@@ -153,30 +149,23 @@ function LoginRegister() {
 
     //与后端通信，判断密码是否与账户匹配
     //todo: 改进
-    const checkRegisterInfo = () => {
-        setErr({ val: 0 })
-        if (!state.inputRegisterContent) {
-            setErr({ val: 2001 })
+    const checkRegisterInfo = (values) => {
+        const formData = new FormData();
+        formData.append('username', values['regName']);
+        formData.append('pwd', values['regPwd']);
+        formData.append('gender', values['regGender']);
+        formData.append('phone', values['regTele']);
+        if (values['regBrief'] != undefined) {
+            formData.append('brief', values['regBrief']);
         }
-        else if (state.inputRegisterContent['regPwd'] != state.inputRegisterContent['regPwd2']) {
-            setErr({ val: 2002 })
-        } else {
-            const formData = new FormData();
-            formData.append('username', state.inputRegisterContent['regName']);
-            formData.append('pwd', state.inputRegisterContent['regPwd']);
-            formData.append('gender', state.selectContent['gender']);
-            formData.append('phone', state.inputRegisterContent['regTele']);
-            formData.append('brief', state.inputRegisterContent['regBrief']);
-
-            axios.post('/api/registration', formData)
-                .then(response => {
-                    console.log(response)
-                    setRegRes(response.data);
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        }
+        axios.post('/api/registration', formData)
+            .then(response => {
+                // console.log(response)
+                setRegRes(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
 
     }
     //如果成功获取到了数据，存储并跳转回上一个页面
@@ -197,12 +186,29 @@ function LoginRegister() {
             const { id, value } = e.target;
             if (id.includes('login')) {
                 dispatch({ type: 'updateInputLoginContent', payload: { id, content: value } })
-            } else {
-                dispatch({ type: 'updateInputRegisterContent', payload: { id, content: value } })
             }
             dispatch({ type: 'updateInputCount', payload: { id, count: value.length } });
         }
     };
+
+    const handleInputReset = () => {
+        form.resetFields();
+        dispatch({ type: 'clearInputCount' });
+    }
+
+    const formRef = useRef(null);
+    const isFirstSubmit = useRef(true);
+    const submitForm = () => {
+        formRef.current.validateFields().then(values => {
+            if (isFirstSubmit.current) {
+                // console.log(isFirstSubmit); // 通过验证的表单数据
+                // console.log(values)
+                checkRegisterInfo(values);
+                isFirstSubmit.current = false;
+            }
+            console.log(isFirstSubmit.current); // 通过验证的表单数据
+        });
+    }
 
     // console.log(state)
     return (
@@ -299,7 +305,123 @@ function LoginRegister() {
                                         Please register first ^_^
                                     </h2>
                                 </div>
+                                <Form
+                                    ref={formRef}
+                                    form={form}
+                                    labelCol={{ span: 6 }}
+                                    wrapperCol={{ span: 24 }}
+                                    layout="horizontal"
+                                    size='large'
+                                    style={{ maxWidth: 600 }}
+                                >
+                                    <Form.Item
+                                        name='regName'
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: '请输入用户名',
+                                            }
+                                        ]}>
+                                        <Input
+                                            allowClear
+                                            maxLength={10}
+                                            suffix={<span style={{ color: '#8c8c8c' }}>{state.inputCounts['regName'] || 0}/10</span>}
+                                            onChange={handleInputChange}
+                                            id="regName"
+                                            placeholder='Username' />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name='regGender'
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: '请选择性别',
+                                            }
+                                        ]}>
+                                        <Select placeholder='Gender' style={LeftTextStyle}>
+                                            <Select.Option value="M">Male</Select.Option>
+                                            <Select.Option value="F">Female</Select.Option>
+                                            <Select.Option value="N">None</Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                    <Form.Item
+                                        name='regPwd'
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: '请输入密码',
+                                            }, {
+                                                pattern: /^(?=.*[a-zA-Z])(?=.*[0-9])[A-Za-z0-9]{6,18}$/,
+                                                message: '密码长度为6-18位，必须由字母、数字组成',
+                                            }
+                                        ]}>
+                                        <Input.Password
+                                            maxLength={18}
+                                            allowClear
+                                            placeholder='Password' />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name='regPwd2'
+                                        dependencies={['regPwd']}
+                                        rules={[
+                                            { required: true, message: '请再次输入密码' },
+                                            ({ getFieldValue }) => ({
+                                                validator(_, value) {
+                                                    if (!value || getFieldValue('regPwd') === value) {
+                                                        return Promise.resolve();
+                                                    }
+                                                    return Promise.reject('两次输入密码不一致');
+                                                },
+                                            }),
+                                        ]}>
+                                        <Input.Password
+                                            maxLength={18}
+                                            allowClear
+                                            placeholder='Confirm Password' />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name='regTele'
+                                        rules={[
+                                            { required: true, message: '请输入手机号码' },
+                                            { pattern: /^1[3456789]\d{9}$/, message: '手机号格式不正确' },
+                                        ]}>
+                                        <Input
+                                            allowClear
+                                            maxLength={11}
+                                            suffix={<span style={{ color: '#8c8c8c' }}>{state.inputCounts['regTele'] || 0}/11</span>}
+                                            onChange={handleInputChange}
+                                            id="regTele"
+                                            placeholder='Telephone' />
+                                    </Form.Item>
+                                    <Form.Item className="required-field" name='regBrief'>
+                                        <Input.TextArea
+                                            allowClear
+                                            autoSize={{ minRows: 3, maxRows: 5 }}
+                                            maxLength={200}
+                                            showCount
+                                            id="regBrief"
+                                            placeholder='Brief Introduction' />
+                                    </Form.Item>
+                                    <div className="btn-box" style={ItemCenter}>
+                                        <a>
+                                            <button style={{ fontWeight: 'bold' }} htmlType="submit" onClick={() => submitForm()}>
+                                                SEND
+                                            </button>
+                                        </a>
+                                        &emsp;
+                                        <a>
+                                            <button style={{ fontWeight: 'bold' }} onClick={() => handleInputReset()}>
+                                                RESET
+                                            </button>
+                                        </a>
+                                    </div>
+                                </Form >
                                 <div>
+                                    <br />
+                                    <br />
+                                    <h6 style={LeftTextStyle}>Already have an account? Login <a className="linklike" onClick={toLogin}>here</a>^_^</h6>
+                                </div>
+                                {/* <div>
                                     <div className='row'>
                                         <Input
                                             required
@@ -363,7 +485,7 @@ function LoginRegister() {
                                         <br />
                                         <h6 style={LeftTextStyle}>Already have an account? Login <a className="linklike" onClick={toLogin}>here</a>^_^</h6>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         )}
                         <div className="col-md-6 offset-md-1">
