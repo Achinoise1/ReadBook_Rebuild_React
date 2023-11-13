@@ -8,13 +8,11 @@ import {
     faFacebook,
     faGithub, faQq
 } from '@fortawesome/fontawesome-free-brands'
-import { useLocation, useNavigate } from "react-router-dom";
 import { subscribe, justifyTextStyle, getUser } from './utils.js';
 import axios from "axios";
 import '../css/style.css';
 import { Progress, Space } from 'antd';
 import { Radar } from '@antv/g2plot';
-import CompareChartsDemo from './CompareChartsDemo'
 
 function Statistics() {
     const [res, setRes] = useState({});

@@ -108,7 +108,7 @@ function TestResult() {
                     <div className="d-flex flex-column justify-content-center align-items-center">
                         {(coreData) ? (
                             coreData.ques.map((itemOutside, indexOutside) => (
-                                <Card className="w-75 test-card" id={indexOutside + 1}>
+                                <Card className="w-75 test-card" id={indexOutside + 1} key={indexOutside}>
                                     <Card.Body>
                                         <div className='row' key={indexOutside} >
                                             <div className='col-2 test-id'>{indexOutside + 1}</div>
