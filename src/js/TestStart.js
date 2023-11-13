@@ -18,6 +18,7 @@ import { Card } from "react-bootstrap";
 import { Button } from 'antd'
 
 function TestStart() {
+    const startTime = Date.now();
     const choice = ['A', 'B', 'C', 'D'];
     const [userChoose, setUserChoose] = useState({});
 
@@ -70,8 +71,14 @@ function TestStart() {
     const coreData = ques.data
     const navigate = useNavigate();
     const show = () => {
+        const endTime = Date.now();
         const formData = new FormData();
         formData.append('userChoice', JSON.stringify(userChoose));
+        formData.append('testType', JSON.stringify(coreData.ques));
+        formData.append('userId', getUser().id);
+        formData.append('startTime', startTime);
+        formData.append('endTime', endTime);
+        formData.append('ques', coreData.ques.length);
         axios.post('/api/Submit', formData)
             .then(
                 navigate('/testResult', { state: { ques: ques, userChoose: userChoose } })
@@ -79,7 +86,6 @@ function TestStart() {
             .catch(error => {
                 console.log(error)
             })
-        console.log(userChoose)
     }
 
     const fetchData = () => {
@@ -94,7 +100,6 @@ function TestStart() {
             });
 
     }
-
 
     return (
         <div>

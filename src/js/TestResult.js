@@ -36,13 +36,6 @@ function TestResult() {
         }
     }
 
-    const show = () => {
-        console.log(userChoose)
-        console.log(ques.data)
-        console.log(cards.data.ans)     // 获取到所有的选择结果
-
-    }
-
     useEffect(() => {
         fetchData();
     }, []);
@@ -62,8 +55,6 @@ function TestResult() {
     }
 
     const coreData = ques.data
-    console.log(cards)
-
 
     return (
         <div>

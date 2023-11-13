@@ -65,3 +65,13 @@ export function removeUser() {
 export function goBack() {
     window.history.back()
 }
+
+export const ERROR = {
+    1001: '账户不存在',
+    1002: '密码错误',
+    1003: '账号有误',
+    2001: '信息缺项',
+    2002: '密码不一致',
+    2003: '该用户已存在',
+    2004: '手机号无效'
+}

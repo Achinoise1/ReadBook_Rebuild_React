@@ -313,7 +313,7 @@ function Statistics() {
                         ) : (
                             <div className="heading_container heading_center">
                                 <h2>
-                                    您还没有进行过任何测试，请先进行<a href='/test'>测试</a>，或返回主页
+                                    您还没有进行过任何测试，请先进行<a href='/test'>测试</a>，或返回<a href='/'>主页</a>
                                 </h2>
                             </div>
                         )}
